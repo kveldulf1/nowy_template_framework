@@ -8,7 +8,5 @@ public class LoginTests extends BaseTest {
     public void userLogsIn() {
         MainPage mainPage = new MainPage(driver).go();
         mainPage.headerComponent.hoverMouseOverUserIcon();
-
-
     }
 }
