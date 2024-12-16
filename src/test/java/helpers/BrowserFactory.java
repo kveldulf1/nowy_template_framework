@@ -25,13 +25,18 @@ public class BrowserFactory {
             default -> throw new NoSuchBrowserException(browser);
         }
     }
+
     private WebDriver createChromeInstance(ConfigurationReader configuration) {
+        ChromeOptions options = new ChromeOptions();
+
         if (configuration.isHeadless()) {
-            return new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
+            options.addArguments("--headless=new", "--disable-gpu", "--disable-search-engine-choice-screen");
         } else {
-            return new ChromeDriver();
+            options.addArguments("--start-maximized", "--disable-search-engine-choice-screen");
         }
+        return new ChromeDriver(options);
     }
+
 
     private WebDriver createFirefoxInstance(ConfigurationReader configuration) {
         if (configuration.isHeadless()) {

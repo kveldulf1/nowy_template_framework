@@ -8,11 +8,11 @@ public class ProductPage extends BasePage {
     private By goToCart = By.cssSelector(".woocommerce-message>.button");
     private By addToWishlist = By.cssSelector("a.add_to_wishlist");
 
-    public final StoreHeaderComponent storeHeader;
+    public final HeaderComponent storeHeader;
 
     public ProductPage(WebDriver driver) {
         super(driver);
-        storeHeader = new StoreHeaderComponent(driver);
+        storeHeader = new HeaderComponent(driver);
     }
 
     public ProductPage go(String productSlug) {

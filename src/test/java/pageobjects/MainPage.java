@@ -3,11 +3,11 @@ package pageobjects;
 import org.openqa.selenium.WebDriver;
 
 public class MainPage extends BasePage {
-    public final StoreHeaderComponent storeHeader;
+    public final HeaderComponent headerComponent;
 
     public MainPage(WebDriver driver) {
         super(driver);
-        storeHeader = new StoreHeaderComponent(driver);
+        headerComponent = new HeaderComponent(driver);
     }
 
     public MainPage go() {
