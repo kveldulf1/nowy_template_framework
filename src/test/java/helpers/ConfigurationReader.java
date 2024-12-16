@@ -47,5 +47,4 @@ public class ConfigurationReader {
         else throw new RuntimeException("\"baseUrl\"is not specified in the Configuration.properties file.");
     }
 
-
 }

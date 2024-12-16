@@ -9,18 +9,23 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 public class BrowserFactory {
+    private WebDriver driver;
+
     public WebDriver createInstance(ConfigurationReader configuration) throws NoSuchBrowserException {
         String browser = configuration.getBrowser();
 
         switch (browser) {
             case "firefox" -> {
-                return createFirefoxInstance(configuration);
+                driver = createFirefoxInstance(configuration);
+                return driver;
             }
             case "chrome" -> {
-                return createChromeInstance(configuration);
+                driver = createChromeInstance(configuration);
+                return driver;
             }
             case "edge" -> {
-                return createEdgeInstance(configuration);
+                driver = createEdgeInstance(configuration);
+                return driver;
             }
             default -> throw new NoSuchBrowserException(browser);
         }
@@ -36,7 +41,6 @@ public class BrowserFactory {
         }
         return new ChromeDriver(options);
     }
-
 
     private WebDriver createFirefoxInstance(ConfigurationReader configuration) {
         if (configuration.isHeadless()) {
