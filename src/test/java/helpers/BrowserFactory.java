@@ -7,27 +7,30 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BrowserFactory {
-    private WebDriver driver;
+    private static final Logger log = LoggerFactory.getLogger(BrowserFactory.class);
 
-    public WebDriver createInstance(ConfigurationReader configuration) throws NoSuchBrowserException {
-        String browser = configuration.getBrowser();
-
-        switch (browser) {
-            case "firefox" -> {
-                driver = createFirefoxInstance(configuration);
-                return driver;
-            }
-            case "chrome" -> {
-                driver = createChromeInstance(configuration);
-                return driver;
-            }
-            case "edge" -> {
-                driver = createEdgeInstance(configuration);
-                return driver;
-            }
-            default -> throw new NoSuchBrowserException(browser);
+    public WebDriver createInstance(ConfigurationReader config) throws NoSuchBrowserException {
+        String browserType = config.getBrowser();
+        log.info("Creating {} browser instance", browserType);
+        
+        try {
+            WebDriver driver = switch (browserType) {
+                case "firefox" -> createFirefoxInstance(config);
+                case "chrome" -> createChromeInstance(config);
+                case "edge" -> createEdgeInstance(config);
+                default -> throw new NoSuchBrowserException(browserType);
+            };
+            
+            log.debug("Browser {} created successfully", browserType);
+            return driver;
+            
+        } catch (Exception e) {
+            log.error("Failed to create browser: {}", e.getMessage());
+            throw new NoSuchBrowserException(e.getMessage());
         }
     }
 
