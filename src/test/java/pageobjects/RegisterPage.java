@@ -59,7 +59,7 @@ public class RegisterPage extends BasePage {
         log.debug("Clicked register button");
     }
 
-    public RegisterPage provideUserDetailsAndRegister() {
+    public WelcomePage provideUserDetailsAndRegister() {
         log.info("Starting registration process");
         isUrlCorrect();
         typeUsername(username);
@@ -73,7 +73,7 @@ public class RegisterPage extends BasePage {
         } else if (isSuccessfullyRegistered()) {
             log.info("Registration completed");
         }
-        return this;
+        return new WelcomePage(driver);
     }
 
     public String getAlertText() {

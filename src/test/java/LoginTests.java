@@ -8,14 +8,14 @@ public class LoginTests extends BaseTest {
         
     @Test
     public void registerUserTest() {
-        RegisterPage registerPage = new MainPage(driver)
+        WelcomePage welcomePage = new MainPage(driver)
             .go()
             .headerComponent
             .hoverMouseOverUserIcon()
             .clickOnRegisterButton()
             .provideUserDetailsAndRegister();
 
-        Assertions.assertTrue(registerPage.getAlertText().contains("User created"),
+        Assertions.assertTrue(new RegisterPage(driver).getAlertText().contains("User created"),
                 "User was not created");
     }
     

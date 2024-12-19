@@ -1,12 +1,16 @@
 import helpers.BrowserFactory;
 import helpers.ConfigurationReader;
 import helpers.NoSuchBrowserException;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static io.restassured.RestAssured.given;
+
 
 public class BaseTest {
     protected WebDriver driver;
@@ -34,7 +38,13 @@ public class BaseTest {
 
     @AfterEach
     public void quitDriver() {
-        log.info("Closing browser");
+        log.info("Closing browser");       
         driver.quit();
     }
+
+//     @AfterAll
+//     public static void cleanDatabase() {
+//         log.info("Cleaning database");
+//         given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
+//     }
 }
