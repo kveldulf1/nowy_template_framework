@@ -14,23 +14,28 @@ public class LoginPage extends BasePage {
 
     public LoginPage(WebDriver driver) {
         super(driver);
+        log.debug("LoginPage initialized");
     }
 
     private void typeUsername(String username) {
+        log.debug("Typing username: {}", username);
         wait.until(ExpectedConditions.elementToBeClickable(loginInput));
         driver.findElement(loginInput).sendKeys(username);
     }
 
     private void typePassword(String password) {
+        log.debug("Typing password: {}", "*".repeat(password.length()));
         wait.until(ExpectedConditions.elementToBeClickable(passwordInput));
         driver.findElement(passwordInput).sendKeys(password);
     }
 
     public WelcomePage login() {
+        log.info("Performing login");
         typeUsername(username);
         typePassword(password);
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         driver.findElement(loginButton).click();
+        log.info("Login completed");
         return new WelcomePage(driver);
     }
 } 

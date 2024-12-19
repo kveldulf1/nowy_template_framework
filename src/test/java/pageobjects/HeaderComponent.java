@@ -10,13 +10,16 @@ public class HeaderComponent extends BasePage {
 
     protected HeaderComponent(WebDriver driver) {
         super(driver);
+        log.debug("HeaderComponent initialized");
     }
 
     public UserMenuComponent hoverMouseOverUserIcon() {
+        log.debug("Hovering mouse over user icon");
         Actions actions = new Actions(driver);
         WebElement loginDropdownElement = driver.findElement(loginDropdown);
         actions.moveToElement(loginDropdownElement);
         actions.perform();
+        log.debug("Mouse hover completed");
         return new UserMenuComponent(driver);
     }
 }
