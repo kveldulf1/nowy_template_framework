@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class UserMenu extends BasePage {
+public class LoginPage extends BasePage {
     private By loginInput = By.cssSelector("input#username");
     private By passwordInput = By.cssSelector("input#password");
     private By loginButton = By.cssSelector("input#loginButton");
@@ -12,7 +12,7 @@ public class UserMenu extends BasePage {
     private String username = "damagehcmf@gmail.com";
     private String password = "dupadupa123";
 
-    public UserMenu(WebDriver driver) {
+    public LoginPage(WebDriver driver) {
         super(driver);
     }
 
@@ -26,15 +26,11 @@ public class UserMenu extends BasePage {
         driver.findElement(passwordInput).sendKeys(password);
     }
 
-    private void clickLoginButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(loginButton));
-        driver.findElement(loginButton).click();
-    }
-
-    public WelcomePage login(){
+    public WelcomePage login() {
         typeUsername(username);
         typePassword(password);
-        clickLoginButton();
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton));
+        driver.findElement(loginButton).click();
         return new WelcomePage(driver);
     }
-}
+} 
