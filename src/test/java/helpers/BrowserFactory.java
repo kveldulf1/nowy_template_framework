@@ -36,11 +36,16 @@ public class BrowserFactory {
 
     private WebDriver createChromeInstance(ConfigurationReader configuration) {
         ChromeOptions options = new ChromeOptions();
+        log.info("Creating Chrome browser with headless={}", configuration.isHeadless());
 
         if (configuration.isHeadless()) {
-            options.addArguments("--headless=new", "--disable-gpu", "--disable-search-engine-choice-screen");
+            String[] args = {"--headless=new", "--disable-gpu", "--disable-search-engine-choice-screen"};
+            log.info("Chrome arguments: {}", String.join(", ", args));
+            options.addArguments(args);
         } else {
-            options.addArguments("--start-maximized", "--disable-search-engine-choice-screen");
+            String[] args = {"--start-maximized", "--disable-search-engine-choice-screen"};
+            log.info("Chrome arguments: {}", String.join(", ", args));
+            options.addArguments(args);
         }
         return new ChromeDriver(options);
     }

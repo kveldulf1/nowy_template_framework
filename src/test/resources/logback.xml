@@ -8,7 +8,4 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>
-
-    <logger name="pageobjects" level="DEBUG"/>
-    <logger name="helpers" level="DEBUG"/>
 </configuration> 
