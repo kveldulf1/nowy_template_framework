@@ -42,9 +42,9 @@ public class BaseTest {
         driver.quit();
     }
 
-    @AfterAll
-    public static void cleanDatabase() {
-        log.info("Cleaning database");
-        given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
-    }
+    // @AfterAll
+    // public static void cleanDatabase() {
+    //     log.info("Cleaning database");
+    //     given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
+    // }
 }

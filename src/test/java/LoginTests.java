@@ -28,6 +28,9 @@ public class LoginTests extends BaseTest {
                 .clickLoginButton()
                 .login();
 
+        String accessToken = System.getProperty("access_token");
+        System.out.println("Access Token: " + accessToken);
+
         Assertions.assertTrue(welcomePage.isUrlCorrect(),
                 "Url is not correct after login.");
     }
