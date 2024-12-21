@@ -11,7 +11,7 @@ import io.restassured.specification.RequestSpecification;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.responseSpecification;
 
-public class AuthenticationTests {
+public class AuthenticationApiTests {
 
     private static RequestSpecification requestSpecification;
     private String validEmail = "damagehcmf@gmail.com";
@@ -25,6 +25,7 @@ public class AuthenticationTests {
         requestSpecification = new RequestSpecBuilder()
                 .log(LogDetail.ALL)
                 .setBaseUri("http://localhost:3000")
+                .setBasePath("/api/login")
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
                 .build();
@@ -44,7 +45,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"" + validEmail + "\", \"password\": \"" + validPassword + "\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(200)
@@ -60,7 +61,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"" + invalidEmail + "\", \"password\": \"" + invalidPassword + "\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -76,7 +77,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"" + invalidEmail + "\", \"password\": \"" + validPassword + "\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -92,7 +93,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"" + validEmail + "\", \"password\": \"" + invalidPassword + "\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -108,7 +109,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"\", \"password\": \"\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -124,7 +125,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"" + validEmail + "\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -140,7 +141,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"test@#$%^&*()@test.com\", \"password\": \"pass@#$%^&*()\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -157,7 +158,7 @@ public class AuthenticationTests {
                 .spec(requestSpecification)
                 .body("{\"email\": \"" + longString + "@test.com\", \"password\": \"" + longString + "\"}")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -174,7 +175,7 @@ public class AuthenticationTests {
                 .contentType(ContentType.XML)
                 .body("<login><email>" + validEmail + "</email><password>" + validPassword + "</password></login>")
                 .when()
-                .post("/api/login")
+                .post()
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
