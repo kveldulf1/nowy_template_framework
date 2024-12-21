@@ -2,7 +2,6 @@ import helpers.BrowserFactory;
 import helpers.ConfigurationReader;
 import helpers.NoSuchBrowserException;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +41,9 @@ public class BaseTest {
         driver.quit();
     }
 
-    // @AfterAll
-    // public static void cleanDatabase() {
-    //     log.info("Cleaning database");
-    //     given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
-    // }
+    @BeforeAll
+    public static void cleanDatabase() {
+        log.info("Cleaning database");
+        given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
+    }
 }

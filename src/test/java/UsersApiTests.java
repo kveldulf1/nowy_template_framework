@@ -2,84 +2,164 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.requestSpecification;
 import static io.restassured.RestAssured.responseSpecification;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.restassured.response.Response;
+import pageobjects.MainPage;
+import pageobjects.RegisterPage;
+import pageobjects.WelcomePage;
 
 public class UsersApiTests {
 
-    private final String validEmail = "user@example.com";
-    private final String validFirstname = "John";
-    private final String validLastname = "Doe";
-    private final String validPassword = "Password123!";
-    private final String validAvatar = "https://example.com/avatar.jpg";
+        private final static String validEmail = "user@example.com";
+        private final static String validFirstname = "John";
+        private final static String validLastname = "Doe";
+        private final static String validPassword = "Password123!";
+        private final static String validAvatar = "https://example.com/avatar.jpg";
 
-    private int userId;
+        private static int userId;
+        private static String accessToken;
 
-    @BeforeAll
-    public static void setupRequestSpecification() {
-        requestSpecification = new RequestSpecBuilder()
-                .log(LogDetail.ALL)
-                .setBaseUri("http://localhost:3000")
-                .setBasePath("/api/users")
-                .setContentType(ContentType.JSON)
-                .setAccept(ContentType.JSON)
-                .build();
-    }
+        private static String requestBody = """
+                        {
+                            "email": "damagehcmf@gmail.com",
+                            "password": "dupadupa123"
+                        }
+                        """;
 
-    @BeforeAll
-    public static void setupResponseSpecification() {
-        responseSpecification = new ResponseSpecBuilder()
-                .log(LogDetail.ALL)
-                .expectContentType(ContentType.JSON)
-                .build();
-    }
+        // @BeforeEach
+        // @Order(2)
+        // public void loginApiTestWithValidEmailAndValidPasswordTest() {
+        // accessToken = given()
+        // .log().all()
+        // .baseUri("http://localhost:3000")
+        // .basePath("/api/login")
+        // .contentType(ContentType.JSON)
+        // .accept(ContentType.JSON)
+        // .body(requestBody)
+        // .when()
+        // .post()
+        // .then()
+        // .log().body()
+        // .contentType(ContentType.JSON)
+        // .statusCode(200)
+        // .extract()
+        // .path("access_token");
 
-    @Test
-    public void createUserApiTest() {
+        // Assertions.assertNotNull(accessToken, "Access token is null");
+        // }
 
-        String testFirstname = "d";
+        @BeforeEach
+        public void setupSpecifications() {
+                accessToken = given()
+                                .log().all()
+                                .baseUri("http://localhost:3000")
+                                .basePath("/api/login")
+                                .contentType(ContentType.JSON)
+                                .accept(ContentType.JSON)
+                                .body(requestBody)
+                                .when()
+                                .post()
+                                .then()
+                                .log().body()
+                                .contentType(ContentType.JSON)
+                                .statusCode(200)
+                                .extract()
+                                .path("access_token");
 
-        String requestBody = """
-                {
-                  "email": "damagehcmf@gmail.co12232we231m",
-                  "firstname": "d",
-                  "lastname": "d",
-                  "password": "d",
-                  "avatar": "d"
-                }
-                """;
+                requestSpecification = new RequestSpecBuilder()
+                                .log(LogDetail.ALL)
+                                .addHeader("Authorization", "Bearer " + accessToken)
+                                .setBaseUri("http://localhost:3000")
+                                .setBasePath("/api/users")
+                                .setContentType(ContentType.JSON)
+                                .setAccept(ContentType.JSON)
+                                .build();
 
-        int userId = given()
-                .spec(requestSpecification)
-                .body(requestBody)
-                .when()
-                .post()
-                .then()
-                .spec(responseSpecification)
-                .statusCode(201)
-                .extract()
-                .path("id");
+                responseSpecification = new ResponseSpecBuilder()
+                                .log(LogDetail.ALL)
+                                .expectContentType(ContentType.JSON)
+                                .build();
+        }
 
-        String firstname = given().spec(requestSpecification)
-                .when()
-                .get("/{id}", userId)
-                .then()
-                .spec(responseSpecification)
-                .statusCode(200)
-                .extract()
-                .path("firstname");
+        @Test
+        public void createUserApiTest() {
 
-        Assertions.assertEquals(testFirstname, firstname, "Compared firstname does not match, user was not created");
+                given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
 
-    }
+                String testFirstname = "d";
+
+                String createUserBody = """
+                                {
+                                  "email": "damagehcmf@gmail.com",
+                                  "firstname": "d",
+                                  "lastname": "d",
+                                  "password": "dupadupa123",
+                                  "avatar": "d"
+                                }
+                                """;
+                Response response = given()
+                                .spec(requestSpecification)
+                                .body(createUserBody)
+                                .when()
+                                .post()
+                                .then()
+                                .spec(responseSpecification)
+                                .statusCode(201)
+                                .extract()
+                                .response();
+
+                userId = response.path("id");
+                accessToken = response.path("access_token");
+
+                String firstname = given().spec(requestSpecification)
+                                .when()
+                                .get("/{id}", userId)
+                                .then()
+                                .spec(responseSpecification)
+                                .statusCode(200)
+                                .extract()
+                                .path("firstname");
+
+                Assertions.assertEquals(testFirstname, firstname,
+                                "Compared firstname does not match, user was not created");
+
+                String accessToken = given()
+                                .log().all()
+                                .baseUri("http://localhost:3000")
+                                .basePath("/api/login")
+                                .contentType(ContentType.JSON)
+                                .accept(ContentType.JSON)
+                                .body(String.format("""
+                                                {
+                                                    "email": "%s",
+                                                    "password": "%s"
+                                                }
+                                                """, "damagehcmf@gmail.com", "dupadupa123"))
+                                .when()
+                                .post()
+                                .then()
+                                .log().body()
+                                .contentType(ContentType.JSON)
+                                .statusCode(200)
+                                .extract()
+                                .path("access_token");
+                given()
+                                .spec(requestSpecification)
+                                .when()
+                                .delete("/{id}", userId)
+                                .then()
+                                .spec(responseSpecification)
+                                .statusCode(200);
+        }
 
 }
