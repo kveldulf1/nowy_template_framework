@@ -1,165 +1,126 @@
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.requestSpecification;
-import static io.restassured.RestAssured.responseSpecification;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
+import static io.restassured.RestAssured.*;
+import org.junit.jupiter.api.*;
+import io.restassured.builder.*;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import pageobjects.MainPage;
-import pageobjects.RegisterPage;
-import pageobjects.WelcomePage;
 
 public class UsersApiTests {
+    private static final String BASE_URI = "http://localhost:3000";
+    private static final String USER_EMAIL = "damagehcmf@gmail.com";
+    private static final String USER_PASSWORD = "dupadupa123";
+    private static final String TEST_FIRSTNAME = "d";
+    
+    private static int userId;
+    private static String accessToken;
 
-        private final static String validEmail = "user@example.com";
-        private final static String validFirstname = "John";
-        private final static String validLastname = "Doe";
-        private final static String validPassword = "Password123!";
-        private final static String validAvatar = "https://example.com/avatar.jpg";
+    @BeforeAll
+    static void setupDB() {
+        // Reset database
+        given()
+            .when()
+            .get(BASE_URI + "/api/restoreDB")
+            .then()
+            .statusCode(201);
+    }
 
-        private static int userId;
-        private static String accessToken;
+    @Test
+    void createAndVerifyUserTest() {
+        // Create user without token
+        String createUserBody = String.format("""
+            {
+              "email": "%s",
+              "firstname": "%s",
+              "lastname": "d",
+              "password": "%s",
+              "avatar": "d"
+            }
+            """, USER_EMAIL, TEST_FIRSTNAME, USER_PASSWORD);
 
-        private static String requestBody = """
-                        {
-                            "email": "damagehcmf@gmail.com",
-                            "password": "dupadupa123"
-                        }
-                        """;
+        Response createResponse = given()
+            .log().all()
+            .baseUri(BASE_URI)
+            .basePath("/api/users")
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .body(createUserBody)
+            .when()
+            .post()
+            .then()
+            .log().body()
+            .statusCode(201)
+            .extract()
+            .response();
 
-        // @BeforeEach
-        // @Order(2)
-        // public void loginApiTestWithValidEmailAndValidPasswordTest() {
-        // accessToken = given()
-        // .log().all()
-        // .baseUri("http://localhost:3000")
-        // .basePath("/api/login")
-        // .contentType(ContentType.JSON)
-        // .accept(ContentType.JSON)
-        // .body(requestBody)
-        // .when()
-        // .post()
-        // .then()
-        // .log().body()
-        // .contentType(ContentType.JSON)
-        // .statusCode(200)
-        // .extract()
-        // .path("access_token");
+        userId = createResponse.path("id");
 
-        // Assertions.assertNotNull(accessToken, "Access token is null");
-        // }
+        // Now login after user is created
+        String loginBody = String.format("""
+            {
+                "email": "%s",
+                "password": "%s"
+            }
+            """, USER_EMAIL, USER_PASSWORD);
 
-        @BeforeEach
-        public void setupSpecifications() {
-                accessToken = given()
-                                .log().all()
-                                .baseUri("http://localhost:3000")
-                                .basePath("/api/login")
-                                .contentType(ContentType.JSON)
-                                .accept(ContentType.JSON)
-                                .body(requestBody)
-                                .when()
-                                .post()
-                                .then()
-                                .log().body()
-                                .contentType(ContentType.JSON)
-                                .statusCode(200)
-                                .extract()
-                                .path("access_token");
+        accessToken = given()
+            .log().all()
+            .baseUri(BASE_URI)
+            .basePath("/api/login")
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .body(loginBody)
+            .when()
+            .post()
+            .then()
+            .log().body()
+            .statusCode(200)
+            .extract()
+            .path("access_token");
 
-                requestSpecification = new RequestSpecBuilder()
-                                .log(LogDetail.ALL)
-                                .addHeader("Authorization", "Bearer " + accessToken)
-                                .setBaseUri("http://localhost:3000")
-                                .setBasePath("/api/users")
-                                .setContentType(ContentType.JSON)
-                                .setAccept(ContentType.JSON)
-                                .build();
+        // Setup specifications after login
+        requestSpecification = new RequestSpecBuilder()
+            .log(LogDetail.ALL)
+            .addHeader("Authorization", "Bearer " + accessToken)
+            .setBaseUri(BASE_URI)
+            .setBasePath("/api/users")
+            .setContentType(ContentType.JSON)
+            .setAccept(ContentType.JSON)
+            .build();
 
-                responseSpecification = new ResponseSpecBuilder()
-                                .log(LogDetail.ALL)
-                                .expectContentType(ContentType.JSON)
-                                .build();
+        responseSpecification = new ResponseSpecBuilder()
+            .log(LogDetail.ALL)
+            .expectContentType(ContentType.JSON)
+            .build();
+
+        // Verify created user
+        String firstname = given()
+            .spec(requestSpecification)
+            .when()
+            .get("/{id}", userId)
+            .then()
+            .spec(responseSpecification)
+            .statusCode(200)
+            .extract()
+            .path("firstname");
+
+        Assertions.assertEquals(TEST_FIRSTNAME, firstname,
+            "Created user firstname does not match expected value");
+    }
+
+    @AfterAll
+    static void cleanupUser() {
+        if (userId != 0) {
+            given()
+                .log().all()
+                .baseUri(BASE_URI)
+                .basePath("/api/users")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .delete("/{id}", userId)
+                .then()
+                .statusCode(200);
         }
-
-        @Test
-        public void createUserApiTest() {
-
-                given().when().get("http://localhost:3000/api/restoreDB").then().statusCode(201);
-
-                String testFirstname = "d";
-
-                String createUserBody = """
-                                {
-                                  "email": "damagehcmf@gmail.com",
-                                  "firstname": "d",
-                                  "lastname": "d",
-                                  "password": "dupadupa123",
-                                  "avatar": "d"
-                                }
-                                """;
-                Response response = given()
-                                .spec(requestSpecification)
-                                .body(createUserBody)
-                                .when()
-                                .post()
-                                .then()
-                                .spec(responseSpecification)
-                                .statusCode(201)
-                                .extract()
-                                .response();
-
-                userId = response.path("id");
-                accessToken = response.path("access_token");
-
-                String firstname = given().spec(requestSpecification)
-                                .when()
-                                .get("/{id}", userId)
-                                .then()
-                                .spec(responseSpecification)
-                                .statusCode(200)
-                                .extract()
-                                .path("firstname");
-
-                Assertions.assertEquals(testFirstname, firstname,
-                                "Compared firstname does not match, user was not created");
-
-                String accessToken = given()
-                                .log().all()
-                                .baseUri("http://localhost:3000")
-                                .basePath("/api/login")
-                                .contentType(ContentType.JSON)
-                                .accept(ContentType.JSON)
-                                .body(String.format("""
-                                                {
-                                                    "email": "%s",
-                                                    "password": "%s"
-                                                }
-                                                """, "damagehcmf@gmail.com", "dupadupa123"))
-                                .when()
-                                .post()
-                                .then()
-                                .log().body()
-                                .contentType(ContentType.JSON)
-                                .statusCode(200)
-                                .extract()
-                                .path("access_token");
-                given()
-                                .spec(requestSpecification)
-                                .when()
-                                .delete("/{id}", userId)
-                                .then()
-                                .spec(responseSpecification)
-                                .statusCode(200);
-        }
-
+    }
 }
