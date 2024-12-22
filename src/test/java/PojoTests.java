@@ -1,7 +1,4 @@
 import org.junit.jupiter.api.Test;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
-
 import constants.ApiEndpoints;
 import pojo.users.CreateUserRequest;
 import pojo.users.CreateUserResponse;
