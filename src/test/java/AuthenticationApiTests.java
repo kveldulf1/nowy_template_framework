@@ -1,16 +1,14 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import constants.ApiEndpoints;
 import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.responseSpecification;
 
 public class AuthenticationApiTests extends ApiBaseTest {
 
-    private static final String LOGIN_ENDPOINT = "/login";
-    private static RequestSpecification requestSpecification;
     private String validEmail = "damagehcmf@gmail.com";
     private String validPassword = "dupadupa123";
     private String invalidEmail = "damagehcmff@gmail.com";
@@ -20,10 +18,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     @Test
     public void loginApiTestWithValidEmailAndValidPasswordTest() {
         String accessToken = given()
-                .spec(requestSpecification)
                 .body("{\"email\": \"" + validEmail + "\", \"password\": \"" + validPassword + "\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -37,7 +34,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"" + invalidEmail + "\", \"password\": \"" + invalidPassword + "\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -52,7 +49,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"" + invalidEmail + "\", \"password\": \"" + validPassword + "\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -67,7 +64,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"" + validEmail + "\", \"password\": \"" + invalidPassword + "\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -82,7 +79,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"\", \"password\": \"\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -97,7 +94,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"" + validEmail + "\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -112,7 +109,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"test@#$%^&*()@test.com\", \"password\": \"pass@#$%^&*()\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -128,7 +125,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
         String responseBody = given()
                 .body("{\"email\": \"" + longString + "@test.com\", \"password\": \"" + longString + "\"}")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
@@ -144,7 +141,7 @@ public class AuthenticationApiTests extends ApiBaseTest {
                 .contentType(ContentType.XML)
                 .body("<login><email>" + validEmail + "</email><password>" + validPassword + "</password></login>")
                 .when()
-                .post(LOGIN_ENDPOINT)
+                .post(ApiEndpoints.LOGIN)
                 .then()
                 .spec(responseSpecification)
                 .statusCode(401)
