@@ -85,7 +85,7 @@ public class UsersApiTests extends ApiBaseTest {
             given()
                 .spec(requestSpecification)
                 .when()
-                .delete(ApiEndpoints.DELETE_USER, userId)
+                .delete("/{id}", userId)
                 .then()
                 .statusCode(200);
         }
