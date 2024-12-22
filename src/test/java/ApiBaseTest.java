@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static io.restassured.RestAssured.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ApiBaseTest {
 

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import constants.ApiEndpoints;
 import io.restassured.builder.*;
 import io.restassured.response.Response;
+import pojo.users.CreateUserRequest;
 
 public class UsersApiTests extends ApiBaseTest {
     private static final String USER_EMAIL = "damagehcmf@gmail.com";
@@ -25,6 +26,8 @@ public class UsersApiTests extends ApiBaseTest {
               "avatar": "d"
             }
             """, USER_EMAIL, TEST_FIRSTNAME, USER_PASSWORD);
+
+        CreateUserRequest createUserRequest = new CreateUserRequest(USER_EMAIL, TEST_FIRSTNAME, "d", USER_PASSWORD, "d");
 
         Response createResponse = given()
             .spec(requestSpecification)
@@ -49,7 +52,7 @@ public class UsersApiTests extends ApiBaseTest {
 
         accessToken = given()
             .spec(requestSpecification)
-            .basePath(ApiEndpoints.LOGIN)
+            .basePath("/login")
             .body(loginBody)
             .when()
             .post()
@@ -62,13 +65,14 @@ public class UsersApiTests extends ApiBaseTest {
         requestSpecification = new RequestSpecBuilder()
             .addRequestSpecification(requestSpecification)
             .addHeader("Authorization", "Bearer " + accessToken)
+            .setBasePath("/users")
             .build();
 
         // Verify user
         String firstname = given()
             .spec(requestSpecification)
             .when()
-            .get(ApiEndpoints.GET_USER_BY_ID, userId)
+            .get("/{id}", userId)
             .then()
             .spec(responseSpecification)
             .statusCode(200)
