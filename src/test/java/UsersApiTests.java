@@ -5,7 +5,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class UsersApiTests {
+public class UsersApiTests extends ApiBaseTest {
     private static final String BASE_URI = "http://localhost:3000";
     private static final String USER_EMAIL = "damagehcmf@gmail.com";
     private static final String USER_PASSWORD = "dupadupa123";
