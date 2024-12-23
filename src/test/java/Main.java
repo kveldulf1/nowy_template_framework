@@ -1,9 +1,10 @@
-import utils.Utils;
+import utils.CommonApiCalls;
 
 public class Main {
 
     public static void main(String[] args) {
-        Utils utils = new Utils();
-        utils.createUser();
+        CommonApiCalls utils = new CommonApiCalls();
+        int userId = utils.createUser();
+        utils.getAccessTokenForUser(userId);
     }   
 }

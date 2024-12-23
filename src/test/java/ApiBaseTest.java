@@ -1,9 +1,11 @@
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static io.restassured.RestAssured.*;
 import config.RestAssuredConfig;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 
 public class ApiBaseTest {
     private static final Logger log = LoggerFactory.getLogger(ApiBaseTest.class);
@@ -30,6 +32,12 @@ public class ApiBaseTest {
         requestSpecification = RestAssuredConfig.getRequestSpec();
         responseSpecification = RestAssuredConfig.getResponseSpec();
 
+
+        // 3. Filter for logging
+        filters(new RequestLoggingFilter(LogDetail.ALL),
+                new ResponseLoggingFilter(LogDetail.ALL));
+
+                
         log.info("API test setup completed");
     }
 }
