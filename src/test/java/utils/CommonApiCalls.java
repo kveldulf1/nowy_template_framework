@@ -43,7 +43,7 @@ public class CommonApiCalls {
         return response.getId().intValue();
     }
 
-    public String getAccessTokenForUser(int userId) {
+    public String logInAndGetAccessTokenForUser(int userId) {
         String loginBody = String.format("""
                 {
                     "email": "%s",
@@ -67,5 +67,16 @@ public class CommonApiCalls {
 
         logger.info("Access token obtained: {}", accessToken);
         return accessToken;
+    }
+
+    public void deleteUser(int userId) {
+        given()
+            .spec(RestAssuredConfig.getRequestSpec())
+            .when()
+            .delete(ApiEndpoints.DELETE_USER, userId)
+            .then()
+            .statusCode(200);
+
+        logger.info("Deleted user with ID: {}", userId);
     }
 }
