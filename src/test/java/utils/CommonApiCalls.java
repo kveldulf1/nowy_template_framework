@@ -15,7 +15,7 @@ public class CommonApiCalls {
     private static final String USER_PASSWORD = "Test123!@#";
     private static final String TEST_NAME = "TestUser";
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CommonApiCalls.class);
-    
+
     // Stores the access token for authenticated requests
     public static String accessToken;
 
@@ -39,7 +39,9 @@ public class CommonApiCalls {
                 .extract()
                 .as(CreateUserResponse.class);
 
-        logger.info("User created with ID: {}", response.getId().intValue());
+        logger.info("Created user credentials - Email: {}, Password: {}", 
+                USER_EMAIL, USER_PASSWORD);
+                
         return response.getId().intValue();
     }
 
@@ -70,13 +72,15 @@ public class CommonApiCalls {
     }
 
     public void deleteUser(int userId) {
-        given()
-            .spec(RestAssuredConfig.getRequestSpec())
-            .when()
-            .delete(ApiEndpoints.DELETE_USER, userId)
-            .then()
-            .statusCode(200);
+        if (userId != 0 && accessToken != null) {
+            given()
+                    .spec(RestAssuredConfig.getRequestSpec())
+                    .when()
+                    .delete(ApiEndpoints.DELETE_USER, userId)
+                    .then()
+                    .statusCode(200);
 
-        logger.info("Deleted user with ID: {}", userId);
+            logger.info("Deleted user with ID: {}", userId);
+        }
     }
 }

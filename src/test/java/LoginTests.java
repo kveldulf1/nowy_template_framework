@@ -34,4 +34,8 @@ public class LoginTests extends BaseTest {
         Assertions.assertTrue(welcomePage.isUrlCorrect(),
                 "Url is not correct after login.");
     }
-}
+
+    @Test
+    public void loggedInUserIsOnTheRightPage() {
+        
+}}
