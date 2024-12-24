@@ -2,6 +2,7 @@ package utils;
 
 import static io.restassured.RestAssured.given;
 import constants.ApiEndpoints;
+import pageobjects.WelcomePage;
 import pojo.users.CreateUserRequest;
 import pojo.users.CreateUserResponse;
 import config.RestAssuredConfig;
@@ -21,7 +22,8 @@ public class CommonApiCalls {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CommonApiCalls.class);
 
     // Stores the access token for authenticated requests
-    public static String accessToken;
+    private static String accessToken;
+    private int userId;
 
     public int createUser() {
         // Create request body with test data
@@ -45,7 +47,7 @@ public class CommonApiCalls {
 
         logger.info("Created user credentials - Email: {}, Password: {}", 
                 USER_EMAIL, USER_PASSWORD);
-                
+        logger.info("Created user with ID: {}", response.getId());             
         return response.getId().intValue();
     }
 
@@ -108,5 +110,13 @@ public class CommonApiCalls {
         driver.manage().addCookie(new Cookie("versionStatus", "1"));
 
         logger.info("Set authentication cookies for user ID: {}", userId);
+    }
+
+    public WelcomePage goToWelcomePageAsLoggedInUser(WebDriver driver) {
+        int userId = createUser();
+        new WelcomePage(driver).go();
+        setAuthCookies(driver, userId);
+        driver.navigate().refresh();
+        return new WelcomePage(driver);
     }
 }
