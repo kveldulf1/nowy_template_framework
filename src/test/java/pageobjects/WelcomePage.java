@@ -18,7 +18,6 @@ public class WelcomePage extends BasePage {
     }
 
     public void go() {
-        // TODO Auto-generated method stub
         driver.get(EXPECTED_URL);
         log.debug("Navigated to {}", EXPECTED_URL);
     }

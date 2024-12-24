@@ -45,9 +45,9 @@ public class CommonApiCalls {
                 .extract()
                 .as(CreateUserResponse.class);
 
-        logger.info("Created user credentials - Email: {}, Password: {}", 
+        logger.info("Created user credentials - Email: {}, Password: {}",
                 USER_EMAIL, USER_PASSWORD);
-        logger.info("Created user with ID: {}", response.getId());             
+        logger.info("Created user with ID: {}", response.getId());
         return response.getId().intValue();
     }
 
@@ -90,24 +90,29 @@ public class CommonApiCalls {
         }
     }
 
-    public void setAuthCookies(WebDriver driver, int userId) {
+    private void setAuthCookies(WebDriver driver, int userId) {
         // First ensure we have a valid token
         if (accessToken == null) {
             logInAndGetAccessTokenForUser(userId);
+        } 
+        record CookieData(String name, String value) {
         }
 
-        // Calculate expiry time (1 hour from now)
-        long expiryTime = Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli();
+        var cookies = new CookieData[] {
+                new CookieData("avatar", TEST_NAME),
+                new CookieData("email", USER_EMAIL),
+                new CookieData("expires", String.valueOf(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli())),
+                new CookieData("firstname", TEST_NAME),
+                new CookieData("id", String.valueOf(userId)),
+                new CookieData("pma_lang", "en"),
+                new CookieData("token", accessToken),
+                new CookieData("username", USER_EMAIL),
+                new CookieData("versionStatus", "1")
+        };
 
-        driver.manage().addCookie(new Cookie("avatar", TEST_NAME));
-        driver.manage().addCookie(new Cookie("email", USER_EMAIL));
-        driver.manage().addCookie(new Cookie("expires", String.valueOf(expiryTime)));
-        driver.manage().addCookie(new Cookie("firstname", TEST_NAME));
-        driver.manage().addCookie(new Cookie("id", String.valueOf(userId)));
-        driver.manage().addCookie(new Cookie("pma_lang", "en"));
-        driver.manage().addCookie(new Cookie("token", accessToken));
-        driver.manage().addCookie(new Cookie("username", USER_EMAIL));
-        driver.manage().addCookie(new Cookie("versionStatus", "1"));
+        for (var cookie : cookies) {
+            driver.manage().addCookie(new Cookie(cookie.name, cookie.value));
+        }
 
         logger.info("Set authentication cookies for user ID: {}", userId);
     }

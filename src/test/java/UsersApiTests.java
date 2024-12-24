@@ -8,14 +8,12 @@ public class UsersApiTests extends ApiBaseTest {
     private static final String TEST_FIRSTNAME = "TestUser";
 
     private static int userId;
-    private static String accessToken;
-
     static CommonApiCalls commonApiCalls = new CommonApiCalls();
 
     @Test
     void createAndVerifyUserTest() {
         userId = commonApiCalls.createUser();
-        accessToken = commonApiCalls.logInAndGetAccessTokenForUser(userId);
+        commonApiCalls.logInAndGetAccessTokenForUser(userId);
 
         // Verify user
         String firstname = given()

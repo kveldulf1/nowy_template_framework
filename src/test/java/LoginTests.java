@@ -3,8 +3,6 @@ import pageobjects.MainPage;
 import pageobjects.RegisterPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.Cookie;
-import java.util.Date;
 import utils.CommonApiCalls;
 
 public class LoginTests extends BaseTest {
@@ -12,7 +10,8 @@ public class LoginTests extends BaseTest {
     @Test
     public void registerUserTest() {
         WelcomePage welcomePage = new MainPage(driver)
-                .go().headerComponent
+                .go()
+                .headerComponent
                 .hoverMouseOverUserIcon()
                 .clickOnRegisterButton()
                 .provideUserDetailsAndRegister();
@@ -24,7 +23,8 @@ public class LoginTests extends BaseTest {
     @Test
     public void userLogsIn() {
         WelcomePage welcomePage = new MainPage(driver)
-                .go().headerComponent
+                .go()
+                .headerComponent
                 .hoverMouseOverUserIcon()
                 .clickLoginButton()
                 .login();
