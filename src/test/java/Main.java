@@ -6,5 +6,6 @@ public class Main {
         // test new code here
         CommonApiCalls commonApiCalls = new CommonApiCalls();
         commonApiCalls.logInAndGetAccessTokenForUser(commonApiCalls.createUser());
+        
     }
 }
