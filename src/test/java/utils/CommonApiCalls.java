@@ -5,6 +5,10 @@ import constants.ApiEndpoints;
 import pojo.users.CreateUserRequest;
 import pojo.users.CreateUserResponse;
 import config.RestAssuredConfig;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Utility class for common API operations
@@ -82,5 +86,27 @@ public class CommonApiCalls {
 
             logger.info("Deleted user with ID: {}", userId);
         }
+    }
+
+    public void setAuthCookies(WebDriver driver, int userId) {
+        // First ensure we have a valid token
+        if (accessToken == null) {
+            logInAndGetAccessTokenForUser(userId);
+        }
+
+        // Calculate expiry time (1 hour from now)
+        long expiryTime = Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli();
+
+        driver.manage().addCookie(new Cookie("avatar", TEST_NAME));
+        driver.manage().addCookie(new Cookie("email", USER_EMAIL));
+        driver.manage().addCookie(new Cookie("expires", String.valueOf(expiryTime)));
+        driver.manage().addCookie(new Cookie("firstname", TEST_NAME));
+        driver.manage().addCookie(new Cookie("id", String.valueOf(userId)));
+        driver.manage().addCookie(new Cookie("pma_lang", "en"));
+        driver.manage().addCookie(new Cookie("token", accessToken));
+        driver.manage().addCookie(new Cookie("username", USER_EMAIL));
+        driver.manage().addCookie(new Cookie("versionStatus", "1"));
+
+        logger.info("Set authentication cookies for user ID: {}", userId);
     }
 }
