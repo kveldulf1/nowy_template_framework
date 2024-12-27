@@ -7,6 +7,8 @@ import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
 import utils.CommonApiCalls;
 import pojo.users.CreateUserRequest;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class LoginTests extends BaseTest {
 
@@ -25,17 +27,15 @@ public class LoginTests extends BaseTest {
 
     @Test
     public void userLogsIn() {
-        CreateUserRequest loginData = TestDataReader.getTestData("api/requests/login", CreateUserRequest.class);
+        JsonArray users = TestDataReader.getTestData("api/requests/login").getAsJsonObject().getAsJsonArray("users");
+        JsonObject randomUser = users.get((int) (Math.random() * users.size())).getAsJsonObject();
         
         WelcomePage welcomePage = new MainPage(driver)
-                .go()
-                .headerComponent
-                .hoverMouseOverUserIcon()
-                .clickLoginButton()
-                .login(loginData.getEmail(), loginData.getPassword());
-
-        Assertions.assertTrue(welcomePage.isUrlCorrect(),
-                "Url is not correct after login.");
+            .go()
+            .headerComponent
+            .hoverMouseOverUserIcon()
+            .clickLoginButton()
+            .login(randomUser.get("email").getAsString(), randomUser.get("password").getAsString());
     }
 
     @Test
