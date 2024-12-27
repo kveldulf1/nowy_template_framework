@@ -38,8 +38,7 @@ public class LoginTests extends BaseTest {
 
     @Test
     public void loggedInUserIsOnTheRightPage() {
-        CommonApiCalls api = new CommonApiCalls();
-        api.goToWelcomePageAsLoggedInUser(driver);
+        new CommonApiCalls().goToWelcomePageAsLoggedInUser(driver);
 
         Assertions.assertTrue(new WelcomePage(driver).isUrlCorrect(),
                 "Url is not correct after login.");
