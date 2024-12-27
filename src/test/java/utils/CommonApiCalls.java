@@ -2,39 +2,43 @@ package utils;
 
 import static io.restassured.RestAssured.given;
 import constants.ApiEndpoints;
+import models.LoginData;
 import pageobjects.WelcomePage;
 import pojo.users.CreateUserRequest;
 import pojo.users.CreateUserResponse;
 import config.RestAssuredConfig;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import utils.TestDataManager;
 
 /**
  * Utility class for common API operations
  */
 public class CommonApiCalls {
-    // Test data for user creation
-    private static final String USER_EMAIL = "test_" + System.currentTimeMillis() + "@example.com";
-    private static final String USER_PASSWORD = "Test123!@#";
-    private static final String TEST_NAME = "TestUser";
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CommonApiCalls.class);
-
-    // Stores the access token for authenticated requests
+    private static final Logger logger = LoggerFactory.getLogger(CommonApiCalls.class);
     private static String accessToken;
     private int userId;
+    private CreateUserRequest currentUser;
 
     public int createUser() {
-        // Create request body with test data
+        // Pobierz dane nowego użytkownika z JSON
+        currentUser = TestDataManager.getTestData("users", CreateUserRequest.class);
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        
         CreateUserRequest createUserRequest = new CreateUserRequest(
-                USER_EMAIL,
-                TEST_NAME,
-                TEST_NAME,
-                USER_PASSWORD,
-                TEST_NAME);
+                currentUser.getEmail().replace("${timestamp}", timestamp),
+                currentUser.getFirstname(),
+                currentUser.getLastname(),
+                currentUser.getPassword(),
+                currentUser.getAvatar());
+        
+        // Aktualizujemy currentUser o rzeczywisty email
+        currentUser = createUserRequest;
 
-        // Send POST request to create user
         CreateUserResponse response = given()
                 .spec(RestAssuredConfig.getRequestSpec())
                 .body(createUserRequest)
@@ -45,24 +49,17 @@ public class CommonApiCalls {
                 .extract()
                 .as(CreateUserResponse.class);
 
-        logger.info("Created user credentials - Email: {}, Password: {}",
-                USER_EMAIL, USER_PASSWORD);
-        logger.info("Created user with ID: {}", response.getId());
+        logger.info("Created user with email: {}", createUserRequest.getEmail());
         return response.getId().intValue();
     }
 
     public String logInAndGetAccessTokenForUser(int userId) {
-        String loginBody = String.format("""
-                {
-                    "email": "%s",
-                    "password": "%s"
-                }
-                """, USER_EMAIL, USER_PASSWORD);
+        // Używamy danych utworzonego użytkownika
+        LoginData loginData = new LoginData(currentUser.getEmail(), currentUser.getPassword());
 
-        // Send POST request to login endpoint
         accessToken = given()
                 .spec(RestAssuredConfig.getRequestSpec())
-                .body(loginBody)
+                .body(loginData)
                 .when()
                 .post(ApiEndpoints.LOGIN)
                 .then()
@@ -70,10 +67,8 @@ public class CommonApiCalls {
                 .extract()
                 .path("access_token");
 
-        // Update global request specification with the new token
         RestAssuredConfig.updateRequestSpecWithToken(accessToken);
-
-        logger.info("Access token obtained: {}", accessToken);
+        logger.info("Successfully logged in user with ID: {}", userId);
         return accessToken;
     }
 
@@ -99,14 +94,14 @@ public class CommonApiCalls {
         }
 
         var cookies = new CookieData[] {
-                new CookieData("avatar", TEST_NAME),
-                new CookieData("email", USER_EMAIL),
+                new CookieData("avatar", currentUser.getAvatar()),
+                new CookieData("email", currentUser.getEmail()),
                 new CookieData("expires", String.valueOf(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli())),
-                new CookieData("firstname", TEST_NAME),
+                new CookieData("firstname", currentUser.getFirstname()),
                 new CookieData("id", String.valueOf(userId)),
                 new CookieData("pma_lang", "en"),
                 new CookieData("token", accessToken),
-                new CookieData("username", USER_EMAIL),
+                new CookieData("username", currentUser.getEmail()),
                 new CookieData("versionStatus", "1")
         };
 

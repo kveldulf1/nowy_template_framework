@@ -1,0 +1,7 @@
+{
+  "email": "test_${timestamp}@example.com",
+  "password": "Test123!@#",
+  "firstname": "TestUser",
+  "lastname": "TestUser",
+  "avatar": "TestUser"
+} 

@@ -3,14 +3,13 @@ package pageobjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import utils.TestDataManager;
+import pojo.users.CreateUserRequest;
 
 public class LoginPage extends BasePage {
     private By loginInput = By.cssSelector("input#username");
     private By passwordInput = By.cssSelector("input#password");
     private By loginButton = By.cssSelector("input#loginButton");
-
-    private String username = "damagehcmf@gmail.com";
-    private String password = "dupadupa123";
 
     public LoginPage(WebDriver driver) {
         super(driver);
@@ -30,8 +29,14 @@ public class LoginPage extends BasePage {
     }
 
     public WelcomePage login() {
-        log.info("Performing login");
-        typeUsername(username);
+        log.info("Performing login with default credentials");
+        CreateUserRequest loginData = TestDataManager.getTestData("api/requests/login", CreateUserRequest.class);
+        return login(loginData.getEmail(), loginData.getPassword());
+    }
+
+    public WelcomePage login(String email, String password) {
+        log.info("Performing login with email: {}", email);
+        typeUsername(email);
         typePassword(password);
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         driver.findElement(loginButton).click();
