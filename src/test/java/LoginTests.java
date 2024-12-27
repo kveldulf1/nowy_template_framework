@@ -24,7 +24,6 @@ public class LoginTests extends BaseTest {
 
     @Test
     public void userLogsIn() {
-        // Pobierz dane logowania z JSON
         CreateUserRequest loginData = TestDataManager.getTestData("api/requests/login", CreateUserRequest.class);
         
         WelcomePage welcomePage = new MainPage(driver)

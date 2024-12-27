@@ -9,23 +9,26 @@ import pojo.users.CreateUserResponse;
 import config.RestAssuredConfig;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.Logger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import utils.TestDataManager;
 
 /**
- * Utility class for common API operations
+ * Utility class for common API operations like user creation, login, and deletion
  */
 public class CommonApiCalls {
-    private static final Logger logger = LoggerFactory.getLogger(CommonApiCalls.class);
+    private static final Logger logger = new LoggerContext().getLogger(CommonApiCalls.class);
     private static String accessToken;
     private int userId;
     private CreateUserRequest currentUser;
 
+    /**
+     * Creates a new user via API
+     * Replaces timestamp placeholder in email if present
+     * @return ID of the created user
+     */
     public int createUser() {
-        // Pobierz dane nowego użytkownika z JSON
         currentUser = TestDataManager.getTestData("users", CreateUserRequest.class);
         String timestamp = String.valueOf(System.currentTimeMillis());
         
@@ -36,7 +39,7 @@ public class CommonApiCalls {
                 currentUser.getPassword(),
                 currentUser.getAvatar());
         
-        // Aktualizujemy currentUser o rzeczywisty email
+        // Update currentUser with the actual email address used in the request
         currentUser = createUserRequest;
 
         CreateUserResponse response = given()
@@ -53,8 +56,13 @@ public class CommonApiCalls {
         return response.getId().intValue();
     }
 
+    /**
+     * Logs in a user and retrieves their access token
+     * Updates RestAssured config with the new token
+     * @param userId ID of the user to log in
+     * @return Access token for the logged in user
+     */
     public String logInAndGetAccessTokenForUser(int userId) {
-        // Używamy danych utworzonego użytkownika
         LoginData loginData = new LoginData(currentUser.getEmail(), currentUser.getPassword());
 
         accessToken = given()
@@ -72,6 +80,10 @@ public class CommonApiCalls {
         return accessToken;
     }
 
+    /**
+     * Deletes a user if both userId and accessToken are valid
+     * @param userId ID of the user to delete
+     */
     public void deleteUser(int userId) {
         if (userId != 0 && accessToken != null) {
             given()
@@ -85,6 +97,12 @@ public class CommonApiCalls {
         }
     }
 
+    /**
+     * Sets authentication cookies in the browser for a user
+     * Creates auth token if not present
+     * @param driver WebDriver instance
+     * @param userId ID of the user to set cookies for
+     */
     private void setAuthCookies(WebDriver driver, int userId) {
         // First ensure we have a valid token
         if (accessToken == null) {
@@ -112,11 +130,17 @@ public class CommonApiCalls {
         logger.info("Set authentication cookies for user ID: {}", userId);
     }
 
+    /**
+     * Creates a new user, navigates to welcome page, and logs them in via cookies
+     * @param driver WebDriver instance
+     * @return WelcomePage instance after successful login
+     */
     public WelcomePage goToWelcomePageAsLoggedInUser(WebDriver driver) {
         int userId = createUser();
         new WelcomePage(driver).go();
         setAuthCookies(driver, userId);
         driver.navigate().refresh();
+        logger.info("Navigated to welcome page as logged in user with ID: {}", userId);
         return new WelcomePage(driver);
     }
 }
