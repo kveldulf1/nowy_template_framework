@@ -12,7 +12,7 @@ public class ConfigurationReader {
     private String headless;
 
     public ConfigurationReader() {
-        String configurationPath = "src/test/resources/configuration.properties";
+        String configurationPath = "src/test/resources/configurations/configuration.properties";
 
         BufferedReader reader;
         try {

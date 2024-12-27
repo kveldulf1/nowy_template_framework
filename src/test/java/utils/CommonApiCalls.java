@@ -3,8 +3,8 @@ package utils;
 import static io.restassured.RestAssured.given;
 import constants.ApiEndpoints;
 import helpers.TestDataReader;
-import models.LoginData;
 import pageobjects.WelcomePage;
+import pojo.authentication.LoginRequest;
 import pojo.users.CreateUserRequest;
 import pojo.users.CreateUserResponse;
 import config.RestAssuredConfig;
@@ -64,7 +64,7 @@ public class CommonApiCalls {
      * @return Access token for the logged in user
      */
     public String logInAndGetAccessTokenForUser(int userId) {
-        LoginData loginData = new LoginData(currentUser.getEmail(), currentUser.getPassword());
+        LoginRequest loginData = new LoginRequest(currentUser.getEmail(), currentUser.getPassword());
 
         accessToken = given()
                 .spec(RestAssuredConfig.getRequestSpec())
