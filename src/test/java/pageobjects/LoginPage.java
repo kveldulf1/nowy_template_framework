@@ -3,7 +3,8 @@ package pageobjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utils.TestDataManager;
+
+import helpers.TestDataReader;
 import pojo.users.CreateUserRequest;
 
 public class LoginPage extends BasePage {
@@ -30,7 +31,7 @@ public class LoginPage extends BasePage {
 
     public WelcomePage login() {
         log.info("Performing login with default credentials");
-        CreateUserRequest loginData = TestDataManager.getTestData("api/requests/login", CreateUserRequest.class);
+        CreateUserRequest loginData = TestDataReader.getTestData("api/requests/login", CreateUserRequest.class);
         return login(loginData.getEmail(), loginData.getPassword());
     }
 

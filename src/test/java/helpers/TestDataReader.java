@@ -1,4 +1,4 @@
-package utils;
+package helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
  * Manages test data loading and processing from JSON files.
  * Provides caching and dynamic value resolution capabilities.
  */
-public class TestDataManager {
-    private static final Logger logger = new LoggerContext().getLogger(TestDataManager.class);
+public class TestDataReader {
+    private static final Logger logger = new LoggerContext().getLogger(TestDataReader.class);
     
     // Gson instance for JSON processing
     private static final Gson gson = new Gson();
@@ -32,7 +32,7 @@ public class TestDataManager {
      * Returns JSON data for given filename, using cache if available
      */
     public static JsonObject getTestData(String fileName) {
-        return dataCache.computeIfAbsent(fileName, TestDataManager::loadJsonFile);
+        return dataCache.computeIfAbsent(fileName, TestDataReader::loadJsonFile);
     }
 
     /**

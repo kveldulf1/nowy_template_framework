@@ -2,6 +2,7 @@ package utils;
 
 import static io.restassured.RestAssured.given;
 import constants.ApiEndpoints;
+import helpers.TestDataReader;
 import models.LoginData;
 import pageobjects.WelcomePage;
 import pojo.users.CreateUserRequest;
@@ -29,7 +30,7 @@ public class CommonApiCalls {
      * @return ID of the created user
      */
     public int createUser() {
-        currentUser = TestDataManager.getTestData("users", CreateUserRequest.class);
+        currentUser = TestDataReader.getTestData("users", CreateUserRequest.class);
         String timestamp = String.valueOf(System.currentTimeMillis());
         
         CreateUserRequest createUserRequest = new CreateUserRequest(

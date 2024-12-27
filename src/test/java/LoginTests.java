@@ -1,10 +1,11 @@
 import org.junit.jupiter.api.Test;
+
+import helpers.TestDataReader;
 import pageobjects.MainPage;
 import pageobjects.RegisterPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
 import utils.CommonApiCalls;
-import utils.TestDataManager;
 import pojo.users.CreateUserRequest;
 
 public class LoginTests extends BaseTest {
@@ -24,7 +25,7 @@ public class LoginTests extends BaseTest {
 
     @Test
     public void userLogsIn() {
-        CreateUserRequest loginData = TestDataManager.getTestData("api/requests/login", CreateUserRequest.class);
+        CreateUserRequest loginData = TestDataReader.getTestData("api/requests/login", CreateUserRequest.class);
         
         WelcomePage welcomePage = new MainPage(driver)
                 .go()
