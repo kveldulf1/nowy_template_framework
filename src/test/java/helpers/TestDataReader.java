@@ -2,6 +2,7 @@ package helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.Logger;
 import java.io.FileReader;
@@ -82,5 +83,16 @@ public class TestDataReader {
         String json = gson.toJson(jsonObject);
         json = resolveDynamicValues(json);
         return gson.fromJson(json, classOfT);
+    }
+
+    /**
+     * Returns a random user from the users array in the given JSON file
+     */
+    public static JsonObject getRandomUser() {
+        JsonArray users = getTestData("api/requests/login")
+            .getAsJsonObject()
+            .getAsJsonArray("users");
+        return users.get((int) (Math.random() * users.size()))
+            .getAsJsonObject();
     }
 } 

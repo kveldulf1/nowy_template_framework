@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import com.google.gson.JsonObject;
+
 import helpers.TestDataReader;
 import pojo.users.CreateUserRequest;
 
@@ -29,12 +31,6 @@ public class LoginPage extends BasePage {
         driver.findElement(passwordInput).sendKeys(password);
     }
 
-    public WelcomePage login() {
-        log.info("Performing login with default credentials");
-        CreateUserRequest loginData = TestDataReader.getTestData("api/requests/login", CreateUserRequest.class);
-        return login(loginData.getEmail(), loginData.getPassword());
-    }
-
     public WelcomePage login(String email, String password) {
         log.info("Performing login with email: {}", email);
         typeUsername(email);
@@ -44,4 +40,13 @@ public class LoginPage extends BasePage {
         log.info("Login completed");
         return new WelcomePage(driver);
     }
-} 
+
+    public WelcomePage loginAsRandomExistingUser() {
+        JsonObject randomUser = TestDataReader.getRandomUser();
+        log.info("Logging in as random existing user: {}, password: {}",
+                randomUser.get("email").getAsString(),
+                randomUser.get("password").getAsString());
+        return login(randomUser.get("email").getAsString(), randomUser.get("password").getAsString());
+
+    }
+}

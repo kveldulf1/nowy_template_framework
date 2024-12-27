@@ -1,48 +1,42 @@
 import org.junit.jupiter.api.Test;
 
-import helpers.TestDataReader;
 import pageobjects.MainPage;
 import pageobjects.RegisterPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
 import utils.CommonApiCalls;
-import pojo.users.CreateUserRequest;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 public class LoginTests extends BaseTest {
 
-    @Test
-    public void registerUserTest() {
-        WelcomePage welcomePage = new MainPage(driver)
-                .go()
-                .headerComponent
-                .hoverMouseOverUserIcon()
-                .clickOnRegisterButton()
-                .provideUserDetailsAndRegister();
+        @Test
+        public void registerUserTest() {
+                WelcomePage welcomePage = new MainPage(driver)
+                                .go().headerComponent
+                                .hoverMouseOverUserIcon()
+                                .clickOnRegisterButton()
+                                .provideUserDetailsAndRegister();
 
-        Assertions.assertTrue(new RegisterPage(driver).getAlertText().contains("User created"),
-                "User was not created");
-    }
+                Assertions.assertTrue(new RegisterPage(driver).getAlertText().contains("User created"),
+                                "User was not created");
+        }
 
-    @Test
-    public void userLogsIn() {
-        JsonArray users = TestDataReader.getTestData("api/requests/login").getAsJsonObject().getAsJsonArray("users");
-        JsonObject randomUser = users.get((int) (Math.random() * users.size())).getAsJsonObject();
-        
-        WelcomePage welcomePage = new MainPage(driver)
-            .go()
-            .headerComponent
-            .hoverMouseOverUserIcon()
-            .clickLoginButton()
-            .login(randomUser.get("email").getAsString(), randomUser.get("password").getAsString());
-    }
+        @Test
+        public void userLogsIn() {
+                WelcomePage welcomePage = new MainPage(driver)
+                                .go().headerComponent
+                                .hoverMouseOverUserIcon()
+                                .clickLoginButton()
+                                .loginAsRandomExistingUser();
 
-    @Test
-    public void loggedInUserIsOnTheRightPage() {
-        new CommonApiCalls().goToWelcomePageAsLoggedInUser(driver);
+                Assertions.assertTrue(welcomePage.isUrlCorrect(),
+                                "Url is not correct after login. Current url: " + driver.getCurrentUrl());
+        }
 
-        Assertions.assertTrue(new WelcomePage(driver).isUrlCorrect(),
-                "Url is not correct after login.");
-    }
+        @Test
+        public void loggedInUserIsOnTheRightPage() {
+                new CommonApiCalls().goToWelcomePageAsLoggedInUser(driver);
+
+                Assertions.assertTrue(new WelcomePage(driver).isUrlCorrect(),
+                                "Url is not correct after login.");
+        }
 }
