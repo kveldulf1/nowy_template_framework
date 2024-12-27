@@ -6,15 +6,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import static io.restassured.RestAssured.given;
 
 
 public class BaseTest {
     protected WebDriver driver;
     private static ConfigurationReader configuration;
-    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
+    private static final Logger log = new LoggerContext().getLogger(BaseTest.class);
 
     @BeforeAll
     public static void loadConfiguration() {

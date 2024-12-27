@@ -7,7 +7,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import com.google.gson.JsonObject;
 
 import helpers.TestDataReader;
-import pojo.users.CreateUserRequest;
 
 public class LoginPage extends BasePage {
     private By loginInput = By.cssSelector("input#username");

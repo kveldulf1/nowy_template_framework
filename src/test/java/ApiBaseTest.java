@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.BeforeAll;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import static io.restassured.RestAssured.*;
 import config.RestAssuredConfig;
 import io.restassured.filter.log.LogDetail;
@@ -8,7 +8,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 
 public class ApiBaseTest {
-    private static final Logger log = LoggerFactory.getLogger(ApiBaseTest.class);
+    private static final Logger log = new LoggerContext().getLogger(ApiBaseTest.class);
     protected static final String BASE_URI = "http://localhost:3000/api";
 
     @BeforeAll

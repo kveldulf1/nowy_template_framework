@@ -7,16 +7,16 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 
 public class BrowserFactory {
-    private static final Logger log = LoggerFactory.getLogger(BrowserFactory.class);
+    private static final Logger log = new LoggerContext().getLogger(BrowserFactory.class);
 
     public WebDriver createInstance(ConfigurationReader config) throws NoSuchBrowserException {
         String browserType = config.getBrowser();
         log.info("Creating {} browser instance", browserType);
-        
+
         try {
             WebDriver driver = switch (browserType) {
                 case "firefox" -> createFirefoxInstance(config);
@@ -24,10 +24,10 @@ public class BrowserFactory {
                 case "edge" -> createEdgeInstance(config);
                 default -> throw new NoSuchBrowserException(browserType);
             };
-            
+
             log.debug("Browser {} created successfully", browserType);
             return driver;
-            
+
         } catch (Exception e) {
             log.error("Failed to create browser: {}", e.getMessage());
             throw new NoSuchBrowserException(e.getMessage());
@@ -39,11 +39,11 @@ public class BrowserFactory {
         log.info("Creating Chrome browser with headless={}", configuration.isHeadless());
 
         if (configuration.isHeadless()) {
-            String[] args = {"--headless=new", "--disable-gpu", "--disable-search-engine-choice-screen"};
+            String[] args = { "--headless=new", "--disable-gpu", "--disable-search-engine-choice-screen" };
             log.info("Chrome arguments: {}", String.join(", ", args));
             options.addArguments(args);
         } else {
-            String[] args = {"--start-maximized", "--disable-search-engine-choice-screen"};
+            String[] args = { "--start-maximized", "--disable-search-engine-choice-screen"};
             log.info("Chrome arguments: {}", String.join(", ", args));
             options.addArguments(args);
         }
