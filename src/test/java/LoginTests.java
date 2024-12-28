@@ -10,7 +10,7 @@ public class LoginTests extends BaseTest {
 
         @Test
         public void registerUserTest() {
-                WelcomePage welcomePage = new MainPage(driver)
+                new MainPage(driver)
                                 .go()
                                 .headerComponent
                                 .hoverMouseOverUserIcon()
@@ -32,6 +32,21 @@ public class LoginTests extends BaseTest {
 
                 Assertions.assertTrue(welcomePage.isUrlCorrect(),
                                 "Url is not correct after login. Current url: " + driver.getCurrentUrl());
+        }
+
+        @Test
+        public void userLogsInWithInvalidUser() {
+                String alertText = new MainPage(driver)
+                                .go()
+                                .headerComponent
+                                .hoverMouseOverUserIcon()
+                                .clickLoginButton()
+                                .loginAsInvalidUser()
+                                .getAlertText();
+
+                Assertions.assertTrue(alertText.contains("Invalid username or password"),
+                                "Alert text does not contain 'Invalid email or password'");
+        
         }
 
         @Test

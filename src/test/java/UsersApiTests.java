@@ -30,6 +30,7 @@ public class UsersApiTests extends ApiBaseTest {
                 "Created user firstname does not match expected value");
     }
 
+
     @AfterAll
     static void cleanupUser() {
         commonApiCalls.deleteUser(userId);

@@ -8,11 +8,9 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import org.slf4j.LoggerFactory;
 
 public class BrowserFactory {
-    private static final Logger log = (Logger) LoggerFactory.getLogger(BrowserFactory.class);
+    private static final Logger log = LoggerManager.getLogger(BrowserFactory.class);
 
     public WebDriver createInstance(ConfigurationReader config) throws NoSuchBrowserException {
         String browserType = config.getBrowser();

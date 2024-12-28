@@ -88,11 +88,19 @@ public class TestDataReader {
     /**
      * Returns a random user from the users array in the given JSON file
      */
-    public static JsonObject getRandomUser() {
+    public static JsonObject getRandomValidUser() {
         JsonArray users = getTestData("api/requests/login")
             .getAsJsonObject()
-            .getAsJsonArray("users");
+            .getAsJsonArray("validUsers");
         return users.get((int) (Math.random() * users.size()))
             .getAsJsonObject();
     }
-} 
+
+    public static JsonObject getInvalidUser() {
+        JsonArray users = getTestData("api/requests/login")
+            .getAsJsonObject()
+            .getAsJsonArray("invalidUsers");
+        return users.get((int) (Math.random() * users.size()))
+            .getAsJsonObject();
+    }
+}

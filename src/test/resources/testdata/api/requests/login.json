@@ -1,5 +1,5 @@
 {
-  "users": [
+  "validUsers": [
     {
       "id": 1,
       "email": "Moses.Armstrong@Feest.ca",
@@ -149,6 +149,18 @@
       "avatar": ".\\data\\users\\face_1591136402.493333_1.jpg",
       "creationDate": "2016-10-16T20:09:27.750Z",
       "birthDate": "1985-06-30T20:15:33.214Z"
+    }
+  ],
+  "invalidUsers": [
+    {
+      "id": 999,
+      "email": "nonexistent.user@test.com",
+      "firstname": "Nonexistent",
+      "lastname": "User",
+      "password": "invalid123",
+      "avatar": ".\\data\\users\\default.jpg",
+      "creationDate": "2024-03-20T10:00:00.000Z",
+      "birthDate": "1990-01-01T00:00:00.000Z"
     }
   ]
 } 

@@ -10,8 +10,8 @@ import pojo.users.CreateUserResponse;
 import config.RestAssuredConfig;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.Logger;
+import helpers.LoggerManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -19,9 +19,8 @@ import java.time.temporal.ChronoUnit;
  * Utility class for common API operations like user creation, login, and deletion
  */
 public class CommonApiCalls {
-    private static final Logger logger = new LoggerContext().getLogger(CommonApiCalls.class);
+    private static final Logger logger = LoggerManager.getLogger(CommonApiCalls.class);
     private static String accessToken;
-    private int userId;
     private CreateUserRequest currentUser;
 
     /**
