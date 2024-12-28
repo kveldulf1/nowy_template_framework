@@ -4,10 +4,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 import java.util.Optional;
 
+
+/**
+ * UserTestData class provides methods to retrieve test user data from the JSON file.
+ * It supports both API tests and UI tests.
+ */
 public class UserTestData {
     private static final JsonObject usersData = TestDataReader.getTestData("users");
     
-    // For API tests
     public static JsonObject getDynamicUser() {
         return usersData.getAsJsonArray("dynamicUserData")
             .get(0)
@@ -34,7 +38,6 @@ public class UserTestData {
             .getAsJsonObject();
     }
     
-    // Common getters for fields
     public static String getEmail(JsonObject user) {
         return Optional.ofNullable(user.get("email"))
             .map(e -> TestDataReader.resolveDynamicValues(e.getAsString()))
