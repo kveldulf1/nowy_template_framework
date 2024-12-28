@@ -11,7 +11,8 @@ public class LoginTests extends BaseTest {
         @Test
         public void registerUserTest() {
                 WelcomePage welcomePage = new MainPage(driver)
-                                .go().headerComponent
+                                .go()
+                                .headerComponent
                                 .hoverMouseOverUserIcon()
                                 .clickOnRegisterButton()
                                 .provideUserDetailsAndRegister();
@@ -23,7 +24,8 @@ public class LoginTests extends BaseTest {
         @Test
         public void userLogsIn() {
                 WelcomePage welcomePage = new MainPage(driver)
-                                .go().headerComponent
+                                .go()
+                                .headerComponent
                                 .hoverMouseOverUserIcon()
                                 .clickLoginButton()
                                 .loginAsRandomExistingUser();

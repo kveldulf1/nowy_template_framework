@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.LoggerFactory;
 
 public abstract class BasePage {
     private By loadingIcon = By.cssSelector(".blockUI");
@@ -20,7 +20,7 @@ public abstract class BasePage {
         this.driver = driver;
         baseURL = new ConfigurationReader().getBaseUrl();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        this.log = new LoggerContext().getLogger(this.getClass());
+        this.log = (Logger) LoggerFactory.getLogger(this.getClass());
     }
 
     protected void waitForLoadingIconDisappear() {
