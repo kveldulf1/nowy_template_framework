@@ -2,23 +2,28 @@ import org.junit.jupiter.api.Test;
 import constants.ApiEndpoints;
 import pojo.users.CreateUserRequest;
 import pojo.users.CreateUserResponse;
+import com.google.gson.JsonObject;
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.*;
+import helpers.UserTestData;
 
 public class PojoTests extends ApiBaseTest {
 
-    private static final String USER_EMAIL = "test_" + System.currentTimeMillis() + "@example.com";
-    private static final String USER_PASSWORD = "Test123!@#";
-    private static final String TEST_NAME = "TestUser";
+    private final JsonObject pojoTestUser = UserTestData.getPojoTestUser();
 
     @Test
     void createAndVerifyUserTest() {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String email = pojoTestUser.get("email").getAsString()
+            .replace("${timestamp}", timestamp);
+        String name = pojoTestUser.get("name").getAsString();
+        
         CreateUserRequest createUserRequest = new CreateUserRequest(
-            USER_EMAIL, 
-            TEST_NAME,
-            TEST_NAME,
-            USER_PASSWORD,
-            TEST_NAME
+            email,
+            name,
+            name,
+            pojoTestUser.get("password").getAsString(),
+            name
         );
         
         CreateUserResponse response = given()

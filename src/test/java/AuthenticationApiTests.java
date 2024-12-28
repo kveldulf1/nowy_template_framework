@@ -4,21 +4,22 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.JsonObject;
 
 import constants.ApiEndpoints;
-import helpers.TestDataReader;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.responseSpecification;
 
+import helpers.UserTestData;
+
 public class AuthenticationApiTests extends ApiBaseTest {
 
     private String expectedErrorMessage = "Incorrect email or password";
-    private JsonObject validUser = TestDataReader.getRandomValidUser();
-    private String validEmail = validUser.get("email").getAsString();
-    private String validPassword = validUser.get("password").getAsString();
-    private JsonObject invalidUser = TestDataReader.getInvalidUser();
-    private String invalidEmail = invalidUser.get("email").getAsString();
-    private String invalidPassword = invalidUser.get("password").getAsString();
+    private JsonObject validUser = UserTestData.getRandomValidUser();
+    private String validEmail = UserTestData.getEmail(validUser);
+    private String validPassword = UserTestData.getPassword(validUser);
+    private JsonObject invalidUser = UserTestData.getInvalidUser();
+    private String invalidEmail = UserTestData.getEmail(invalidUser);
+    private String invalidPassword = UserTestData.getPassword(invalidUser);
     
 
     @Test

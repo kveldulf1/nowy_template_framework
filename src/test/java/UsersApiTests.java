@@ -1,11 +1,12 @@
 import static io.restassured.RestAssured.*;
 import org.junit.jupiter.api.*;
-
 import constants.ApiEndpoints;
 import utils.CommonApiCalls;
+import com.google.gson.JsonObject;
+import helpers.UserTestData;
 
 public class UsersApiTests extends ApiBaseTest {
-    private static final String TEST_FIRSTNAME = "TestUser";
+    private static final JsonObject dynamicUser = UserTestData.getDynamicUser();
 
     private static int userId;
     static CommonApiCalls commonApiCalls = new CommonApiCalls();
@@ -26,10 +27,9 @@ public class UsersApiTests extends ApiBaseTest {
                 .extract()
                 .path("firstname");
 
-        Assertions.assertEquals(TEST_FIRSTNAME, firstname,
+        Assertions.assertEquals(dynamicUser.get("firstname").getAsString(), firstname,
                 "Created user firstname does not match expected value");
     }
-
 
     @AfterAll
     static void cleanupUser() {

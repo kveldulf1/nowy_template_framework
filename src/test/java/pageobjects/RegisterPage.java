@@ -3,6 +3,8 @@ package pageobjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.WebDriver;
+import com.google.gson.JsonObject;
+import helpers.UserTestData;
 
 public class RegisterPage extends BasePage {
 
@@ -13,13 +15,13 @@ public class RegisterPage extends BasePage {
     private By passwordInput = By.cssSelector("input[data-testid='password-input']");
     private By registerButton = By.cssSelector("input[data-testid='register-button']");
     private By alertPopup = By.cssSelector("div[data-testid='alert-popup']");
-    private String username = "damage";
-    private String lastname = "damage";
-    private String email = "damagehcmf@gmail.com";
-    private String password = "dupadupa123";
+    
+    private final JsonObject testUser;
 
     public RegisterPage(WebDriver driver) {
         super(driver);
+        testUser = UserTestData.getDefaultTestUser();
+        log.debug("Loaded test user data for registration");
     }
 
     private boolean isUrlCorrect() {
@@ -62,10 +64,10 @@ public class RegisterPage extends BasePage {
     public WelcomePage provideUserDetailsAndRegister() {
         log.info("Starting registration process");
         isUrlCorrect();
-        typeUsername(username);
-        typeLastname(lastname);
-        typeEmail(email);
-        typePassword(password);
+        typeUsername(testUser.get("username").getAsString());
+        typeLastname(testUser.get("lastname").getAsString());
+        typeEmail(testUser.get("email").getAsString());
+        typePassword(testUser.get("password").getAsString());
         clickRegisterButton();
 
         if (getAlertText().contains("User not created! Email not unique")) {

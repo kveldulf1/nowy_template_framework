@@ -174,5 +174,19 @@
       "creationDate": "2024-03-20T10:00:00.000Z",
       "birthDate": "1990-01-01T00:00:00.000Z"
     }
-  ]
+  ],
+  "testMessages": {
+    "loginError": "Incorrect email or password"
+  },
+  "defaultTestUser": {
+    "username": "damage",
+    "lastname": "damage",
+    "email": "damagehcmf@gmail.com",
+    "password": "dupadupa123"
+  },
+  "pojoTestUser": {
+    "email": "test_${timestamp}@example.com",
+    "password": "Test123!@#",
+    "name": "TestUser"
+  }
 } 
