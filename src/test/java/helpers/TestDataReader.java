@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import pojo.users.CreateUserRequest;
 
 /**
  * Manages test data loading and processing from JSON files.
@@ -80,7 +81,19 @@ public class TestDataReader {
      */
     public static <T> T getTestData(String fileName, Class<T> classOfT) {
         JsonObject jsonObject = getTestData(fileName);
-        String json = gson.toJson(jsonObject);
+        String json;
+        
+        // Jeśli próbujemy pobrać dane do utworzenia użytkownika
+        if (classOfT == CreateUserRequest.class) {
+            // Pobierz pierwszy element z tablicy dynamicUserData
+            json = gson.toJson(jsonObject
+                .getAsJsonArray("dynamicUserData")
+                .get(0)
+                .getAsJsonObject());
+        } else {
+            json = gson.toJson(jsonObject);
+        }
+        
         json = resolveDynamicValues(json);
         return gson.fromJson(json, classOfT);
     }
@@ -89,7 +102,7 @@ public class TestDataReader {
      * Returns a random user from the users array in the given JSON file
      */
     public static JsonObject getRandomValidUser() {
-        JsonArray users = getTestData("api/requests/login")
+        JsonArray users = getTestData("users")
             .getAsJsonObject()
             .getAsJsonArray("validUsers");
         return users.get((int) (Math.random() * users.size()))
@@ -97,7 +110,7 @@ public class TestDataReader {
     }
 
     public static JsonObject getInvalidUser() {
-        JsonArray users = getTestData("api/requests/login")
+        JsonArray users = getTestData("users")
             .getAsJsonObject()
             .getAsJsonArray("invalidUsers");
         return users.get((int) (Math.random() * users.size()))

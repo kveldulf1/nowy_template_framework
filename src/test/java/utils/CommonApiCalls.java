@@ -32,8 +32,13 @@ public class CommonApiCalls {
         currentUser = TestDataReader.getTestData("users", CreateUserRequest.class);
         String timestamp = String.valueOf(System.currentTimeMillis());
         
+        String email = currentUser.getEmail();
+        if (email == null) {
+            throw new IllegalStateException("Email cannot be null in test data");
+        }
+        
         CreateUserRequest createUserRequest = new CreateUserRequest(
-                currentUser.getEmail().replace("${timestamp}", timestamp),
+                email.replace("${timestamp}", timestamp),
                 currentUser.getFirstname(),
                 currentUser.getLastname(),
                 currentUser.getPassword(),
