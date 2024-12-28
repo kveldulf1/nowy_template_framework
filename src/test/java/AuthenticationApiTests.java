@@ -1,7 +1,10 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.JsonObject;
+
 import constants.ApiEndpoints;
+import helpers.TestDataReader;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
@@ -9,16 +12,19 @@ import static io.restassured.RestAssured.responseSpecification;
 
 public class AuthenticationApiTests extends ApiBaseTest {
 
-    private String validEmail = "damagehcmf@gmail.com";
-    private String validPassword = "dupadupa123";
-    private String invalidEmail = "damagehcmff@gmail.com";
-    private String invalidPassword = "dupadupa1234";
     private String expectedErrorMessage = "Incorrect email or password";
+    private JsonObject validUser = TestDataReader.getRandomValidUser();
+    private String validEmail = validUser.get("email").getAsString();
+    private String validPassword = validUser.get("password").getAsString();
+    private JsonObject invalidUser = TestDataReader.getInvalidUser();
+    private String invalidEmail = invalidUser.get("email").getAsString();
+    private String invalidPassword = invalidUser.get("password").getAsString();
+    
 
     @Test
     public void loginApiTestWithValidEmailAndValidPasswordTest() {
         String accessToken = given()
-                .body("{\"email\": \"" + validEmail + "\", \"password\": \"" + validPassword + "\"}")
+                .body("{\"email\": \"" + this.validEmail + "\", \"password\": \"" + this.validPassword + "\"}")
                 .when()
                 .post(ApiEndpoints.LOGIN)
                 .then()
