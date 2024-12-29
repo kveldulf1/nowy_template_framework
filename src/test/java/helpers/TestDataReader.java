@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Provides caching and dynamic value resolution capabilities.
  */
 public class TestDataReader {
-    private static final Logger logger = new LoggerContext().getLogger(TestDataReader.class);
+    private static final Logger logger = LoggerManager.getLogger(TestDataReader.class);
     
     // Gson instance for JSON processing
     private static final Gson gson = new Gson();
@@ -106,6 +104,7 @@ public class TestDataReader {
         JsonArray users = getTestData("users")
             .getAsJsonObject()
             .getAsJsonArray("validUsers");
+        logger.info("Locking random user for thread: {}", users.get((int) (Math.random() * users.size())));
         return users.get((int) (Math.random() * users.size()))
             .getAsJsonObject();
     }

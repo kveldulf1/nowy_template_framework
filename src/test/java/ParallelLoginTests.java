@@ -1,10 +1,8 @@
 import org.junit.jupiter.api.Test;
 
 import pageobjects.MainPage;
-import pageobjects.RegisterPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
-import utils.CommonApiCalls;
 
 public class ParallelLoginTests extends BaseTest {
 

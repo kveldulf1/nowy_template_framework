@@ -1,8 +1,14 @@
 package helpers;
 
 import com.google.gson.JsonObject;
+
+import ch.qos.logback.classic.Logger;
+
 import com.google.gson.JsonArray;
 import java.util.Optional;
+
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 
 /**
@@ -11,6 +17,8 @@ import java.util.Optional;
  */
 public class UserTestData {
     private static final JsonObject usersData = TestDataReader.getTestData("users");
+    private static final Logger logger = LoggerManager.getLogger(UserTestData.class);
+
     
     public static JsonObject getDynamicUser() {
         return usersData.getAsJsonArray("dynamicUserData")
@@ -26,10 +34,13 @@ public class UserTestData {
         return usersData.getAsJsonObject("defaultTestUser");
     }
     
+    @ResourceLock(value = "validUsers", mode = ResourceAccessMode.READ_WRITE)
     public static JsonObject getRandomValidUser() {
         JsonArray users = usersData.getAsJsonArray("validUsers");
-        return users.get((int) (Math.random() * users.size()))
-            .getAsJsonObject();
+        int randomIndex = (int) (Math.random() * users.size());
+        JsonObject selectedUser = users.get(randomIndex).getAsJsonObject();
+        logger.info("Locking random user for thread: {}", selectedUser);
+        return selectedUser;
     }
     
     public static JsonObject getInvalidUser() {
