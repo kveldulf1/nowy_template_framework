@@ -10,8 +10,14 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+
 import pojo.users.CreateUserRequest;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Manages test data loading and processing from JSON files.
@@ -100,13 +106,19 @@ public class TestDataReader {
     /**
      * Returns a random user from the users array in the given JSON file
      */
+    @ResourceLock(value = "validUsers", mode = ResourceAccessMode.READ_WRITE)
     public static JsonObject getRandomValidUser() {
-        JsonArray users = getTestData("users")
-            .getAsJsonObject()
-            .getAsJsonArray("validUsers");
-        logger.info("Locking random user for thread: {}", users.get((int) (Math.random() * users.size())));
-        return users.get((int) (Math.random() * users.size()))
-            .getAsJsonObject();
+        try {
+            logger.info("Thread {} requesting user", Thread.currentThread().getId());
+            JsonObject user = UserPool.acquireUser();
+            logger.info("Thread {} received user: {}", 
+                Thread.currentThread().getId(), 
+                user.get("email").getAsString());
+            return user;
+        } catch (InterruptedException e) {
+            logger.error("Thread {} failed to acquire user", Thread.currentThread().getId(), e);
+            throw new RuntimeException("Failed to acquire user", e);
+        }
     }
 
     public static JsonObject getInvalidUser() {
@@ -115,5 +127,15 @@ public class TestDataReader {
             .getAsJsonArray("invalidUsers");
         return users.get((int) (Math.random() * users.size()))
             .getAsJsonObject();
+    }
+
+    public static void releaseUser(JsonObject user) {
+        logger.info("Thread {} preparing to release user: {}", 
+            Thread.currentThread().getId(), 
+            user.get("email").getAsString());
+        UserPool.releaseUser(user);
+        logger.info("Thread {} successfully released user: {}", 
+            Thread.currentThread().getId(), 
+            user.get("email").getAsString());
     }
 }

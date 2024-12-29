@@ -1,10 +1,13 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import pageobjects.MainPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
 import utils.CommonApiCalls;
 
+@Execution(ExecutionMode.CONCURRENT)
 public class OtherParallelLoginTests extends BaseTest {
 
         @Test

@@ -13,6 +13,8 @@ public class LoginPage extends BasePage {
     private By passwordInput = By.cssSelector("input#password");
     private By loginButton = By.cssSelector("input#loginButton");
 
+    private JsonObject currentUser;
+
     public LoginPage(WebDriver driver) {
         super(driver);
         log.debug("LoginPage initialized");
@@ -41,12 +43,14 @@ public class LoginPage extends BasePage {
     }
 
     public WelcomePage loginAsRandomExistingUser() {
-        JsonObject randomUser = TestDataReader.getRandomValidUser();
-        log.info("Logging in as random valid user: {}", randomUser.get("email").getAsString());
-        return login(
-            randomUser.get("email").getAsString(), 
-            randomUser.get("password").getAsString()
+        currentUser = TestDataReader.getRandomValidUser();
+        log.info("Logging in as random valid user: {}", currentUser.get("email").getAsString());
+        WelcomePage welcomePage = login(
+            currentUser.get("email").getAsString(), 
+            currentUser.get("password").getAsString()
         );
+        TestDataReader.releaseUser(currentUser);
+        return welcomePage;
     }
 
     public LoginPage loginAsInvalidUser() {

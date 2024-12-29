@@ -1,9 +1,12 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import pageobjects.MainPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
 
+@Execution(ExecutionMode.CONCURRENT)
 public class ParallelLoginTests extends BaseTest {
 
         @Test
