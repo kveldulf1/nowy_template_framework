@@ -6,6 +6,11 @@ import ch.qos.logback.classic.Logger;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
+/**
+ * This class is used to manage a pool of users for testing.
+ * It provides methods to acquire and release users to the pool.
+ */
 public class UserPool {
     private static BlockingQueue<JsonObject> availableUsers;
     private static final Object INIT_LOCK = new Object();
@@ -22,7 +27,7 @@ public class UserPool {
                     for (int i = 0; i < users.size(); i++) {
                         availableUsers.offer(users.get(i).getAsJsonObject());
                     }
-                    logger.info("Initialized user pool with {} users", users.size());
+                    logger.debug("Initialized user pool with {} users", users.size());
                 }
             }
         }
@@ -30,12 +35,12 @@ public class UserPool {
     
     public static JsonObject acquireUser() throws InterruptedException {
         initializeIfNeeded();
-        logger.info("Thread {} waiting to acquire user. Available users: {}", 
+        logger.debug("Thread {} waiting to acquire user. Available users: {}", 
             Thread.currentThread().getId(), 
             availableUsers.size());
             
         JsonObject user = availableUsers.take();
-        logger.info("Thread {} acquired user: {}. Remaining users: {}", 
+        logger.debug("Thread {} acquired user: {}. Remaining users: {}", 
             Thread.currentThread().getId(), 
             user.get("email").getAsString(),
             availableUsers.size());
@@ -46,7 +51,7 @@ public class UserPool {
     public static void releaseUser(JsonObject user) {
         initializeIfNeeded();
         availableUsers.offer(user);
-        logger.info("Thread {} released user: {}. Available users: {}", 
+        logger.debug("Thread {} released user: {}. Available users: {}", 
             Thread.currentThread().getId(), 
             user.get("email").getAsString(),
             availableUsers.size());
