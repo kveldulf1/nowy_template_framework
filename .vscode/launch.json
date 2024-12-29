@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Run JUnit Tests",
+            "request": "launch",
+            "mainClass": "",
+            "vmArgs": [
+                "-ea",
+                "-Djunit.jupiter.execution.parallel.enabled=true",
+                "-Djunit.jupiter.execution.parallel.mode.default=same_thread",
+                "-Djunit.jupiter.execution.parallel.mode.classes.default=concurrent"
+            ]
+        }
+    ]
+} 
