@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import pojo.users.CreateUserRequest;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages test data loading and processing from JSON files.
@@ -25,7 +26,7 @@ public class TestDataReader {
     private static final Gson gson = new Gson();
     
     // Cache storing JSON files to avoid repeated disk reads
-    private static final Map<String, JsonObject> dataCache = new HashMap<>();
+    private static final Map<String, JsonObject> dataCache = new ConcurrentHashMap<>();
     
     // Regex pattern to find dynamic values like ${timestamp}
     private static final Pattern DYNAMIC_VALUE_PATTERN = Pattern.compile("\\$\\{(.+?)\\}");
