@@ -9,25 +9,24 @@ import org.openqa.selenium.WebDriver;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import static io.restassured.RestAssured.given;
+import org.slf4j.LoggerFactory;
 
 
 public class BaseTest {
     protected WebDriver driver;
-    private static ConfigurationReader configuration;
-    private static final Logger log = new LoggerContext().getLogger(BaseTest.class);
+    private static final ConfigurationReader configuration = ConfigurationReader.getInstance();
+    private static final Logger log = (Logger) LoggerFactory.getLogger(BaseTest.class);
 
     @BeforeAll
     public static void loadConfiguration() {
         log.info("Loading test configuration");
-        configuration = new ConfigurationReader();
     }
 
     @BeforeEach
     public void setup() {
         log.info("Starting browser setup");
-        BrowserFactory browser = new BrowserFactory();
         try {
-            driver = browser.createInstance(configuration);
+            driver = new BrowserFactory().createInstance(configuration);
             log.info("Browser started successfully");
         } catch (NoSuchBrowserException e) {
             log.error("Failed to start browser", e);

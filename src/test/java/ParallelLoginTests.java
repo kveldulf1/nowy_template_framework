@@ -1,12 +1,8 @@
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import pageobjects.MainPage;
 import pageobjects.WelcomePage;
 import org.junit.jupiter.api.Assertions;
 
-@Execution(ExecutionMode.CONCURRENT)
 public class ParallelLoginTests extends BaseTest {
 
         @Test
@@ -138,27 +134,4 @@ public class ParallelLoginTests extends BaseTest {
                 Assertions.assertTrue(welcomePage.isUrlCorrect(),
                                 "Url is not correct after login. Current url: " + driver.getCurrentUrl());
         }
-
-        // @Test
-        // public void userLogsInWithInvalidUser() {
-        //         String alertText = new MainPage(driver)
-        //                         .go()
-        //                         .headerComponent
-        //                         .hoverMouseOverUserIcon()
-        //                         .clickLoginButton()
-        //                         .loginAsInvalidUser()
-        //                         .getAlertText();
-
-        //         Assertions.assertTrue(alertText.contains("Invalid username or password"),
-        //                         "Alert text does not contain 'Invalid email or password'");
-        
-        // }
-
-        // @Test
-        // public void loggedInUserIsOnTheRightPage() {
-        //         new CommonApiCalls().goToWelcomePageAsLoggedInUser(driver);
-
-        //         Assertions.assertTrue(new WelcomePage(driver).isUrlCorrect(),
-        //                         "Url is not correct after login.");
-        // }
 }

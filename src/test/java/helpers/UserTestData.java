@@ -39,7 +39,7 @@ public class UserTestData {
         JsonArray users = usersData.getAsJsonArray("validUsers");
         int randomIndex = (int) (Math.random() * users.size());
         JsonObject selectedUser = users.get(randomIndex).getAsJsonObject();
-        logger.info("Locking random user for thread: {}", selectedUser);
+        logger.debug("Locking random user for thread: {}", selectedUser);
         return selectedUser;
     }
     

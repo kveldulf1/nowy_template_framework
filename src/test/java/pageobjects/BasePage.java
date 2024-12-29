@@ -18,7 +18,7 @@ public abstract class BasePage {
 
     protected BasePage(WebDriver driver) {
         this.driver = driver;
-        baseURL = new ConfigurationReader().getBaseUrl();
+        baseURL = ConfigurationReader.getInstance().getBaseUrl();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         this.log = LoggerManager.getLogger(this.getClass());
     }

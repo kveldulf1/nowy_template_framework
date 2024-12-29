@@ -16,8 +16,6 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 
 import pojo.users.CreateUserRequest;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Manages test data loading and processing from JSON files.
@@ -88,9 +86,9 @@ public class TestDataReader {
         JsonObject jsonObject = getTestData(fileName);
         String json;
         
-        // Jeśli próbujemy pobrać dane do utworzenia użytkownika
+        // If we are trying to get data for creating a user
         if (classOfT == CreateUserRequest.class) {
-            // Pobierz pierwszy element z tablicy dynamicUserData
+            // Get the first element from the dynamicUserData array
             json = gson.toJson(jsonObject
                 .getAsJsonArray("dynamicUserData")
                 .get(0)
@@ -109,9 +107,9 @@ public class TestDataReader {
     @ResourceLock(value = "validUsers", mode = ResourceAccessMode.READ_WRITE)
     public static JsonObject getRandomValidUser() {
         try {
-            logger.info("Thread {} requesting user", Thread.currentThread().getId());
+            logger.debug("Thread {} requesting user", Thread.currentThread().getId());
             JsonObject user = UserPool.acquireUser();
-            logger.info("Thread {} received user: {}", 
+            logger.debug("Thread {} received user: {}", 
                 Thread.currentThread().getId(), 
                 user.get("email").getAsString());
             return user;
@@ -130,11 +128,11 @@ public class TestDataReader {
     }
 
     public static void releaseUser(JsonObject user) {
-        logger.info("Thread {} preparing to release user: {}", 
+        logger.debug("Thread {} preparing to release user: {}", 
             Thread.currentThread().getId(), 
             user.get("email").getAsString());
         UserPool.releaseUser(user);
-        logger.info("Thread {} successfully released user: {}", 
+        logger.debug("Thread {} successfully released user: {}", 
             Thread.currentThread().getId(), 
             user.get("email").getAsString());
     }

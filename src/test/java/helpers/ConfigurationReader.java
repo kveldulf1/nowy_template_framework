@@ -1,50 +1,58 @@
 package helpers;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigurationReader {
-    private String browser;
-    private String baseURL;
-    private String headless;
-
-    public ConfigurationReader() {
+    private static volatile ConfigurationReader instance;
+    private final Properties properties;
+    
+    private ConfigurationReader() {
+        properties = loadProperties();
+    }
+    
+    public static ConfigurationReader getInstance() {
+        if (instance == null) {
+            synchronized (ConfigurationReader.class) {
+                if (instance == null) {
+                    instance = new ConfigurationReader();
+                }
+            }
+        }
+        return instance;
+    }
+    
+    private Properties loadProperties() {
+        Properties props = new Properties();
         String configurationPath = "src/test/resources/configurations/configuration.properties";
-
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(configurationPath));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Configuration file not found at: " + configurationPath);
-        }
-        Properties properties = new Properties();
-        try {
-            properties.load(reader);
-            reader.close();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(configurationPath))) {
+            props.load(reader);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to load configuration: " + e.getMessage());
         }
-
-        baseURL = properties.getProperty("baseURL");
-        browser = properties.getProperty("browser");
-        headless = properties.getProperty("headless");
+        return props;
     }
 
     public String getBrowser() {
-        if (!browser.isEmpty()) return browser;
-        else throw new RuntimeException("\"browser\" is not specified in the Configuration.properties file.");
-    }
-    public boolean isHeadless() {
-        if (!headless.isEmpty()) return Boolean.parseBoolean(headless);
-        else throw new RuntimeException("\"headless\" is not specified in the Configuration.properties file.");
-    }
-    public String getBaseUrl() {
-        if (!baseURL.isEmpty()) return baseURL;
-        else throw new RuntimeException("\"baseUrl\"is not specified in the Configuration.properties file.");
+        String browser = properties.getProperty("browser");
+        if (browser == null || browser.isEmpty()) {
+            throw new RuntimeException("browser not specified in configuration.properties");
+        }
+        return browser;
     }
 
+    public boolean isHeadless() {
+        return Boolean.parseBoolean(properties.getProperty("headless", "false"));
+    }
+
+    public String getBaseUrl() {
+        String url = properties.getProperty("baseURL");
+        if (url == null || url.isEmpty()) {
+            throw new RuntimeException("baseURL not specified in configuration.properties");
+        }
+        return url;
+    }
 }

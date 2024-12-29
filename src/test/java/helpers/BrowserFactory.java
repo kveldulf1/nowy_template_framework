@@ -8,13 +8,14 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BrowserFactory {
-    private static final Logger log = LoggerManager.getLogger(BrowserFactory.class);
+    private static final Logger log = (Logger) LoggerFactory.getLogger(BrowserFactory.class);
 
     public WebDriver createInstance(ConfigurationReader config) throws NoSuchBrowserException {
         String browserType = config.getBrowser();
-        log.info("Creating {} browser instance", browserType);
+        log.debug("Creating {} browser instance", browserType);
 
         try {
             WebDriver driver = switch (browserType) {
@@ -35,15 +36,15 @@ public class BrowserFactory {
 
     private WebDriver createChromeInstance(ConfigurationReader configuration) {
         ChromeOptions options = new ChromeOptions();
-        log.info("Creating Chrome browser with headless={}", configuration.isHeadless());
+        log.debug("Creating Chrome browser with headless={}", configuration.isHeadless());
 
         if (configuration.isHeadless()) {
             String[] args = { "--headless=new", "--disable-gpu", "--disable-search-engine-choice-screen" };
-            log.info("Chrome arguments: {}", String.join(", ", args));
+            log.debug("Chrome arguments: {}", String.join(", ", args));
             options.addArguments(args);
         } else {
             String[] args = { "--start-maximized", "--disable-search-engine-choice-screen"};
-            log.info("Chrome arguments: {}", String.join(", ", args));
+            log.debug("Chrome arguments: {}", String.join(", ", args));
             options.addArguments(args);
         }
         return new ChromeDriver(options);
