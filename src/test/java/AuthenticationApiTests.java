@@ -10,7 +10,10 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.responseSpecification;
 
 import helpers.UserTestData;
+import io.qameta.allure.*;
 
+@Epic("API Testing")
+@Feature("Authentication API")
 public class AuthenticationApiTests extends ApiBaseTest {
 
     private String expectedErrorMessage = "Incorrect email or password";
@@ -23,6 +26,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     
 
     @Test
+    @Story("Login API")
+    @Description("Verify login with valid credentials returns access token")
+    @Severity(SeverityLevel.BLOCKER)
     public void loginApiTestWithValidEmailAndValidPasswordTest() {
         String accessToken = given()
                 .body("{\"email\": \"" + this.validEmail + "\", \"password\": \"" + this.validPassword + "\"}")
@@ -37,6 +43,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Security")
+    @Description("Verify login fails with invalid email and password")
+    @Severity(SeverityLevel.CRITICAL)
     public void loginApiTestWithInvalidEmailAndInvalidPasswordTest() {
         String responseBody = given()
                 .body("{\"email\": \"" + invalidEmail + "\", \"password\": \"" + invalidPassword + "\"}")
@@ -52,6 +61,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Security")
+    @Description("Verify login fails with invalid email and valid password")
+    @Severity(SeverityLevel.CRITICAL)
     public void loginApiTestWithInvalidEmailAndValidPasswordTest() {
         String responseBody = given()
                 .body("{\"email\": \"" + invalidEmail + "\", \"password\": \"" + validPassword + "\"}")
@@ -67,6 +79,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Security")
+    @Description("Verify login fails with valid email and invalid password")
+    @Severity(SeverityLevel.CRITICAL)
     public void loginApiTestWithValidEmailAndInvalidPasswordTest() {
         String responseBody = given()
                 .body("{\"email\": \"" + validEmail + "\", \"password\": \"" + invalidPassword + "\"}")
@@ -82,6 +97,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Validation")
+    @Description("Verify login fails with empty credentials")
+    @Severity(SeverityLevel.NORMAL)
     public void loginApiTestWithEmptyCredentialsTest() {
         String responseBody = given()
                 .body("{\"email\": \"\", \"password\": \"\"}")
@@ -97,6 +115,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Validation")
+    @Description("Verify login fails with missing required fields")
+    @Severity(SeverityLevel.NORMAL)
     public void loginApiTestWithMissingFieldsTest() {
         String responseBody = given()
                 .body("{\"email\": \"" + validEmail + "\"}")
@@ -112,6 +133,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Security")
+    @Description("Verify login handles special characters properly")
+    @Severity(SeverityLevel.MINOR)
     public void loginApiTestWithSpecialCharactersTest() {
         String responseBody = given()
                 .body("{\"email\": \"test@#$%^&*()@test.com\", \"password\": \"pass@#$%^&*()\"}")
@@ -127,6 +151,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Validation")
+    @Description("Verify login handles very long credentials properly")
+    @Severity(SeverityLevel.MINOR)
     public void loginApiTestWithVeryLongCredentialsTest() {
         String longString = "a".repeat(257);
         String responseBody = given()
@@ -143,6 +170,9 @@ public class AuthenticationApiTests extends ApiBaseTest {
     }
 
     @Test
+    @Story("Login API Validation")
+    @Description("Verify login handles wrong content type properly")
+    @Severity(SeverityLevel.NORMAL)
     public void loginApiTestWithWrongContentTypeTest() {
         String responseBody = given()
                 .contentType(ContentType.XML)
