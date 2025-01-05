@@ -9,7 +9,7 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 
 public class ApiBaseTest {
     private static final Logger log = new LoggerContext().getLogger(ApiBaseTest.class);
-    protected static final String BASE_URI = "http://localhost:3000/api";
+    protected static final String BASE_URI = "http://192.168.10.159:3000/api";
 
     @BeforeAll
     public static void setup() {
